@@ -6,7 +6,7 @@
     "keras_version": "2.4.0",
     "backend": "tensorflow",
     "model_config": {
-      "class_name": "Functional",
+      "class_name": "Model",
       "config": {
         "name": "functional_1",
         "layers": [
@@ -23,7 +23,7 @@
             "inbound_nodes": []
           },
           {
-            "class_name": "Functional",
+            "class_name": "Model",
             "config": {
               "name": "mobilenet_1.00_224",
               "layers": [
