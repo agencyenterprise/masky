@@ -1,19 +1,21 @@
 import React, { useState, useCallback } from "react";
-
 import * as tf from "@tensorflow/tfjs";
-import * as faceapi from "face-api.js";
+
+import { Prediction } from "./Prediction";
+
+const PREDICTION_THRESHOLD = 0.65;
 
 export const usePrediction = (
   model: tf.LayersModel | null,
   videoRef: React.MutableRefObject<HTMLVideoElement | null>
-): [string, HTMLCanvasElement[], () => void] => {
-  const [prediction, setPrediction] = useState<string>("none");
-  const [canvases, setCanvases] = useState<HTMLCanvasElement[]>([]);
+): [Prediction, () => void] => {
+  const [prediction, setPrediction] = useState<Prediction>(Prediction.Loading);
 
-  const onInterval = useCallback(
-    classify(model, videoRef, setPrediction, setCanvases),
-    [model, videoRef, setPrediction, setCanvases]
-  );
+  const onInterval = useCallback(classify(model, videoRef, setPrediction), [
+    model,
+    videoRef,
+    setPrediction,
+  ]);
 
   const onLoaded = useCallback(() => {
     const handle = setInterval(onInterval, 100);
@@ -22,42 +24,23 @@ export const usePrediction = (
     };
   }, [onInterval]);
 
-  return [prediction, canvases, onLoaded];
+  return [prediction, onLoaded];
 };
 
 const classify = (
   model: tf.LayersModel | null,
   videoRef: React.MutableRefObject<HTMLVideoElement | null>,
-  setPrediction: (prediction: string) => void,
-  setCanvases: (canvases: HTMLCanvasElement[]) => void
+  setPrediction: (prediction: Prediction) => void
 ) => async () => {
   if (!model || !videoRef.current) return;
   const video = videoRef.current;
 
-  let image = tf.browser.fromPixels(video);
-
-  const detections = await faceapi.detectAllFaces(
-    image as any,
-    new faceapi.TinyFaceDetectorOptions()
-  );
-
-  if (detections.length === 0) {
-    // setPrediction("none");
-    // setCanvases([]);
-    return;
-  }
-
-  const images = await faceapi.extractFaceTensors(image as any, detections);
-  const canvases = await faceapi.extractFaces(image as any, detections);
-
-  setCanvases(canvases);
-
   tf.tidy(() => {
-    // const image = (images[0].expandDims(0) as any)
-    //   .resizeBilinear([224, 224])
-    //   .div(255);
-    // With no face detection:
-    image = image.resizeBilinear([224, 224]).expandDims(0).div(255);
+    const image = tf.browser
+      .fromPixels(video)
+      .resizeBilinear([224, 224])
+      .expandDims(0)
+      .div(255);
 
     const prediction = model.predict(image);
 
@@ -69,9 +52,16 @@ const classify = (
     const face = data[0];
     const mask = data[1];
 
-    setPrediction(face >= mask ? "face" : "mask");
+    setPrediction(getPrediction(face, mask));
   });
+};
 
-  image.dispose();
-  images.forEach((image) => image.dispose());
+const getPrediction = (face: number, mask: number): Prediction => {
+  const highPrediction = Math.max(face, mask);
+  if (highPrediction < PREDICTION_THRESHOLD) {
+    console.log(highPrediction);
+    return Prediction.None;
+  }
+
+  return face >= mask ? Prediction.Face : Prediction.Mask;
 };
