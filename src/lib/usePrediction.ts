@@ -1,37 +1,41 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import * as tf from "@tensorflow/tfjs";
 
 import { Prediction } from "./Prediction";
+import { WebcamStatus } from "./useWebcam";
 
 const PREDICTION_THRESHOLD = 0.65;
+const PREDICTION_TIME = 1000;
 
 export const usePrediction = (
   model: tf.LayersModel | null,
-  videoRef: React.MutableRefObject<HTMLVideoElement | null>
-): [Prediction, () => void] => {
+  videoRef: React.MutableRefObject<HTMLVideoElement | null>,
+  webcamStatus: WebcamStatus
+): Prediction => {
   const [prediction, setPrediction] = useState<Prediction>(Prediction.Loading);
 
-  const onInterval = useCallback(classify(model, videoRef, setPrediction), [
-    model,
-    videoRef,
-    setPrediction,
-  ]);
+  const onInterval = useCallback(
+    () => classify(model, videoRef, setPrediction),
+    [model, videoRef, setPrediction]
+  );
 
-  const onLoaded = useCallback(() => {
-    const handle = setInterval(onInterval, 100);
+  useEffect(() => {
+    if (webcamStatus !== WebcamStatus.Ready) return;
+
+    const handle = setInterval(onInterval, PREDICTION_TIME);
     return () => {
       clearInterval(handle);
     };
-  }, [onInterval]);
+  });
 
-  return [prediction, onLoaded];
+  return prediction;
 };
 
-const classify = (
+const classify = async (
   model: tf.LayersModel | null,
   videoRef: React.MutableRefObject<HTMLVideoElement | null>,
   setPrediction: (prediction: Prediction) => void
-) => async () => {
+) => {
   if (!model || !videoRef.current) return;
   const video = videoRef.current;
 

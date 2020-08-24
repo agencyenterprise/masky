@@ -2,43 +2,34 @@ import React from "react";
 import styled, { createGlobalStyle } from "styled-components/macro";
 
 import { usePrediction } from "./lib/usePrediction";
-import { useWebcam, WebcamStatus } from "./lib/useWebcam";
+import { useWebcam } from "./lib/useWebcam";
 import { useModels } from "./lib/useModels";
-import {
-  Prediction,
-  PredictionColor,
-  PredictionMessage,
-} from "./lib/Prediction";
+import { Prediction, PredictionColor } from "./lib/Prediction";
+import { getMessage } from "./lib/message";
 
 export const App: React.FunctionComponent = () => {
   const model = useModels();
-  const [videoRef, status] = useWebcam();
-  const [prediction, startPredicting] = usePrediction(model, videoRef);
+  const [videoRef, status, onVideoLoaded] = useWebcam();
+  const prediction = usePrediction(model, videoRef, status);
 
   const loaded = prediction !== Prediction.Loading;
 
   return (
-    <div className="App">
+    <PredictionWrapper prediction={prediction}>
       <GlobalStyle />
-      <WebcamWrapper prediction={prediction}>
-        <Message top size="h1">
-          Mask Detector
-        </Message>
+      <Message size="h1">Mask Detector</Message>
 
+      <WebcamContainer>
         <Webcam
           autoPlay
           ref={videoRef}
-          onLoadedData={startPredicting}
+          onLoadedData={onVideoLoaded}
           loaded={loaded}
         />
+      </WebcamContainer>
 
-        <Message bottom size="h2">
-          {status === WebcamStatus.Failed
-            ? "Couldn't connect to webcam."
-            : PredictionMessage[prediction]}
-        </Message>
-      </WebcamWrapper>
-    </div>
+      <Message size="h2">{getMessage(prediction, status)}</Message>
+    </PredictionWrapper>
   );
 };
 
@@ -52,23 +43,36 @@ const GlobalStyle = createGlobalStyle`
     font-family: sans-serif;
   }
 
+  html, body, #root {
+    height: 100%;
+  }
+
   * {
     box-sizing: border-box;
   }
 `;
 
-interface WebcamWrapperProps {
+interface PredictionWrapperProps {
   prediction: Prediction;
 }
 
-const WebcamWrapper = styled.div<WebcamWrapperProps>`
-  width: 100vw;
-  height: 100vh;
+const PredictionWrapper = styled.div<PredictionWrapperProps>`
+  width: 100%;
+  height: 100%;
   border-width: 0.5rem;
   border-style: solid;
   border-color: ${({ prediction }) => PredictionColor[prediction]};
   background: black;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+const WebcamContainer = styled.div`
+  position: relative;
+  flex-grow: 1;
+  flex-shrink: 1;
 `;
 
 interface WebcamProps {
@@ -76,9 +80,12 @@ interface WebcamProps {
 }
 
 const Webcam = styled.video<WebcamProps>`
+  position: absolute;
   width: 100%;
   height: 100%;
   display: ${({ loaded }) => (loaded ? "block" : "none")};
+  transform: scaleX(-1);
+  flex-grow: 1;
 `;
 
 const MessageSize = {
@@ -89,16 +96,10 @@ const MessageSize = {
 
 interface MessageProps {
   size: keyof typeof MessageSize;
-  top?: boolean;
-  bottom?: boolean;
 }
 
 const Message = styled.div<MessageProps>`
-  position: absolute;
-  bottom: ${({ bottom }) => (bottom ? "1rem" : "auto")};
-  top: ${({ top }) => (top ? "1rem" : "auto")};
-  left: 50%;
-  transform: translate(-50%, 0);
+  padding: 1rem 0;
   color: white;
   font-size: ${({ size }) => MessageSize[size]};
   text-align: center;

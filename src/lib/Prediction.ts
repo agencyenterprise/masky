@@ -13,8 +13,8 @@ export const PredictionColor = {
 };
 
 export const PredictionMessage = {
-  [Prediction.Loading]: "Connecting to webcam...",
-  [Prediction.None]: "I'm not sure. Try facing directly at the screen.",
+  [Prediction.Loading]: "Starting predictions...",
+  [Prediction.None]: "I'm not sure. Try getting closer to the screen.",
   [Prediction.Face]: "Don't forget your mask!",
   [Prediction.Mask]: "Thanks for wearing a mask!",
 };

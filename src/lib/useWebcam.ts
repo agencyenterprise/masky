@@ -1,14 +1,23 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 
 export enum WebcamStatus {
   Waiting = "waiting",
   Connected = "connected",
   Failed = "failed",
+  Ready = "ready",
 }
+
+export const WebcamStatusMessage = {
+  [WebcamStatus.Waiting]: "Waiting for webcam...",
+  [WebcamStatus.Connected]: "Starting predictions...",
+  [WebcamStatus.Failed]: "Couldn't connect to webcam.",
+  [WebcamStatus.Ready]: "Ready for predictions.",
+};
 
 export const useWebcam = (): [
   React.MutableRefObject<HTMLVideoElement | null>,
-  WebcamStatus
+  WebcamStatus,
+  () => void
 ] => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [status, setStatus] = useState<WebcamStatus>(WebcamStatus.Waiting);
@@ -31,5 +40,7 @@ export const useWebcam = (): [
       });
   }, []);
 
-  return [videoRef, status];
+  const onReady = useCallback(() => setStatus(WebcamStatus.Ready), []);
+
+  return [videoRef, status, onReady];
 };
