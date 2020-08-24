@@ -59,7 +59,6 @@ const classify = (
 const getPrediction = (face: number, mask: number): Prediction => {
   const highPrediction = Math.max(face, mask);
   if (highPrediction < PREDICTION_THRESHOLD) {
-    console.log(highPrediction);
     return Prediction.None;
   }
 
