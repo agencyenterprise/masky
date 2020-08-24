@@ -2,7 +2,7 @@ import React from "react";
 import styled, { createGlobalStyle } from "styled-components/macro";
 
 import { usePrediction } from "./lib/usePrediction";
-import { useWebcam } from "./lib/useWebcam";
+import { useWebcam, WebcamStatus } from "./lib/useWebcam";
 import { useModels } from "./lib/useModels";
 import {
   Prediction,
@@ -12,7 +12,7 @@ import {
 
 export const App: React.FunctionComponent = () => {
   const model = useModels();
-  const videoRef = useWebcam();
+  const [videoRef, status] = useWebcam();
   const [prediction, startPredicting] = usePrediction(model, videoRef);
 
   const loaded = prediction !== Prediction.Loading;
@@ -33,7 +33,9 @@ export const App: React.FunctionComponent = () => {
         />
 
         <Message bottom size="h2">
-          {PredictionMessage[prediction]}
+          {status === WebcamStatus.Failed
+            ? "Couldn't connect to webcam."
+            : PredictionMessage[prediction]}
         </Message>
       </WebcamWrapper>
     </div>
