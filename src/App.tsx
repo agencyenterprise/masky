@@ -93,8 +93,8 @@ interface MessageProps {
 
 const Message = styled.div<MessageProps>`
   position: absolute;
-  bottom: ${({ bottom }) => (bottom ? "1rem" : "none")};
-  top: ${({ top }) => (top ? "1rem" : "none")};
+  bottom: ${({ bottom }) => (bottom ? "1rem" : "auto")};
+  top: ${({ top }) => (top ? "1rem" : "auto")};
   left: 50%;
   transform: translate(-50%, 0);
   color: white;
