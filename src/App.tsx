@@ -22,6 +22,8 @@ export const App: React.FunctionComponent = () => {
       <WebcamContainer>
         <Webcam
           autoPlay
+          muted
+          playsInline
           ref={videoRef}
           onLoadedData={onVideoLoaded}
           loaded={loaded}

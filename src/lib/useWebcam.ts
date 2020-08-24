@@ -8,10 +8,10 @@ export enum WebcamStatus {
 }
 
 export const WebcamStatusMessage = {
-  [WebcamStatus.Waiting]: "Waiting for webcam...",
+  [WebcamStatus.Waiting]: "Waiting for camera...",
   [WebcamStatus.Connected]: "Starting predictions...",
-  [WebcamStatus.Failed]: "Couldn't connect to webcam.",
-  [WebcamStatus.Ready]: "Ready for predictions.",
+  [WebcamStatus.Failed]: "Couldn't connect to camera.",
+  [WebcamStatus.Ready]: "Setting up model...",
 };
 
 export const useWebcam = (): [
