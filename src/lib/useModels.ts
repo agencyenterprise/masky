@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
-import * as tf from "@tensorflow/tfjs";
+import * as automl from "@tensorflow/tfjs-automl";
 
-export const useModels = () => {
-  const [model, setModel] = useState<tf.LayersModel | null>(null);
+export const useDetectionModel = () => {
+  const [model, setModel] = useState<automl.ObjectDetectionModel | null>(null);
 
   useEffect(() => {
-    loadModel().then(setModel);
+    loadDetectionModel().then(setModel);
   }, []);
 
   return model;
 };
 
-const loadModel = (): Promise<tf.LayersModel> => {
-  return tf.loadLayersModel("model/model.json");
+const loadDetectionModel = (): Promise<automl.ObjectDetectionModel> => {
+  return automl.loadObjectDetection(
+    `${process.env.REACT_APP_MODEL_URL}/model.json`
+  );
 };

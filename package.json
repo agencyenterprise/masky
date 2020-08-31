@@ -5,6 +5,7 @@
   "dependencies": {
     "@craco/craco": "^5.6.4",
     "@tensorflow/tfjs": "^2.3.0",
+    "@tensorflow/tfjs-automl": "^1.0.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -27,7 +28,9 @@
     "test": "craco test",
     "eject": "craco eject",
     "format": "prettier --write '**/*.{ts,tsx,css,html,md,json}'",
-    "deploy": "surge ./build --domain https://masky.surge.sh"
+    "deploy": "surge ./build --domain https://masky.surge.sh",
+    "cors:get": "gsutil cors get gs://masky-model",
+    "cors:set": "gsutil cors set ./cors.json gs://masky-model"
   },
   "eslintConfig": {
     "extends": "react-app"

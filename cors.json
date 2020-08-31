@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["http://localhost:3000", "https://masky.surge.sh"],
+    "responseHeader": ["Content-Type"],
+    "method": ["GET"],
+    "maxAgeSeconds": 3600
+  }
+]

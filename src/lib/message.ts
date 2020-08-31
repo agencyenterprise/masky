@@ -1,13 +1,13 @@
-import { Prediction, PredictionMessage } from "./Prediction";
 import { WebcamStatus, WebcamStatusMessage } from "./useWebcam";
+import { Detections, DetectionMessage, DetectionStatus } from "./Detection";
 
 export const getMessage = (
-  prediction: Prediction,
+  detections: Detections,
   webcamStatus: WebcamStatus
 ): string => {
-  if (prediction === Prediction.Loading) {
+  if (detections.status === DetectionStatus.Loading) {
     return WebcamStatusMessage[webcamStatus];
   } else {
-    return PredictionMessage[prediction];
+    return DetectionMessage[detections.status];
   }
 };

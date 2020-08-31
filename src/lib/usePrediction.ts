@@ -1,70 +1,49 @@
 import React, { useState, useCallback, useEffect } from "react";
-import * as tf from "@tensorflow/tfjs";
+import "@tensorflow/tfjs";
+import * as automl from "@tensorflow/tfjs-automl";
 
-import { Prediction } from "./Prediction";
+import {
+  Detections,
+  defaultDetections,
+  calculateDetections,
+} from "./Detection";
 import { WebcamStatus } from "./useWebcam";
 
-const PREDICTION_THRESHOLD = 0.65;
-const PREDICTION_TIME = 1000;
+const DETECTIONS_TIME = 1000;
 
-export const usePrediction = (
-  model: tf.LayersModel | null,
+export const useDetection = (
+  model: automl.ObjectDetectionModel | null,
   videoRef: React.MutableRefObject<HTMLVideoElement | null>,
   webcamStatus: WebcamStatus
-): Prediction => {
-  const [prediction, setPrediction] = useState<Prediction>(Prediction.Loading);
+): Detections => {
+  const [detections, setDetections] = useState<Detections>(defaultDetections);
 
-  const onInterval = useCallback(
-    () => classify(model, videoRef, setPrediction),
-    [model, videoRef, setPrediction]
-  );
+  const onInterval = useCallback(() => detect(model, videoRef, setDetections), [
+    model,
+    videoRef,
+    setDetections,
+  ]);
 
   useEffect(() => {
     if (webcamStatus !== WebcamStatus.Ready) return;
 
-    const handle = setInterval(onInterval, PREDICTION_TIME);
+    const handle = setInterval(onInterval, DETECTIONS_TIME);
     return () => {
       clearInterval(handle);
     };
   });
 
-  return prediction;
+  return detections;
 };
 
-const classify = async (
-  model: tf.LayersModel | null,
+const detect = async (
+  model: automl.ObjectDetectionModel | null,
   videoRef: React.MutableRefObject<HTMLVideoElement | null>,
-  setPrediction: (prediction: Prediction) => void
+  setDetections: (detections: Detections) => void
 ) => {
   if (!model || !videoRef.current) return;
   const video = videoRef.current;
 
-  tf.tidy(() => {
-    const image = tf.browser
-      .fromPixels(video)
-      .resizeBilinear([224, 224])
-      .expandDims(0)
-      .div(255);
-
-    const prediction = model.predict(image);
-
-    const firstPrediction = Array.isArray(prediction)
-      ? prediction[0]
-      : prediction;
-
-    const data = firstPrediction.dataSync();
-    const face = data[0];
-    const mask = data[1];
-
-    setPrediction(getPrediction(face, mask));
-  });
-};
-
-const getPrediction = (face: number, mask: number): Prediction => {
-  const highPrediction = Math.max(face, mask);
-  if (highPrediction < PREDICTION_THRESHOLD) {
-    return Prediction.None;
-  }
-
-  return face >= mask ? Prediction.Face : Prediction.Mask;
+  const detections = await model.detect(video);
+  setDetections(calculateDetections(detections));
 };

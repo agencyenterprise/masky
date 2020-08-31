@@ -1,24 +1,23 @@
 import React from "react";
 import styled, { createGlobalStyle } from "styled-components/macro";
 
-import { usePrediction } from "./lib/usePrediction";
+import { useDetection } from "./lib/usePrediction";
 import { useWebcam } from "./lib/useWebcam";
-import { useModels } from "./lib/useModels";
-import { Prediction, PredictionColor } from "./lib/Prediction";
+import { useDetectionModel } from "./lib/useModels";
 import { getMessage } from "./lib/message";
+import { Detections, DetectionColor, DetectionStatus } from "./lib/Detection";
 
 export const App: React.FunctionComponent = () => {
-  const model = useModels();
+  const detectionModel = useDetectionModel();
   const [videoRef, status, onVideoLoaded] = useWebcam();
-  const prediction = usePrediction(model, videoRef, status);
+  const detections = useDetection(detectionModel, videoRef, status);
 
-  const loaded = prediction !== Prediction.Loading;
+  const loaded = detections.status !== DetectionStatus.Loading;
 
   return (
-    <PredictionWrapper prediction={prediction}>
+    <PredictionWrapper detections={detections}>
       <GlobalStyle />
       <Message size="h1">Mask Detector</Message>
-
       <WebcamContainer>
         <Webcam
           autoPlay
@@ -28,9 +27,32 @@ export const App: React.FunctionComponent = () => {
           onLoadedData={onVideoLoaded}
           loaded={loaded}
         />
+
+        {videoRef.current && (
+          <BoundingBoxContainer
+            viewBox={`0 0 ${videoRef.current?.videoWidth} ${videoRef.current?.videoHeight}`}
+          >
+            {detections.boxes.map((detection) => {
+              const { box, label } = detection;
+              const { left, top, width, height } = box;
+              return (
+                <rect
+                  key={`${left}-${top}-${width}-${height}`}
+                  x={left}
+                  y={top}
+                  width={width}
+                  height={height}
+                  stroke={DetectionColor[label as DetectionStatus]}
+                  fill="transparent"
+                  strokeWidth="5"
+                />
+              );
+            })}
+          </BoundingBoxContainer>
+        )}
       </WebcamContainer>
 
-      <Message size="h2">{getMessage(prediction, status)}</Message>
+      <Message size="h2">{getMessage(detections, status)}</Message>
     </PredictionWrapper>
   );
 };
@@ -55,7 +77,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 interface PredictionWrapperProps {
-  prediction: Prediction;
+  detections: Detections;
 }
 
 const PredictionWrapper = styled.div<PredictionWrapperProps>`
@@ -63,7 +85,7 @@ const PredictionWrapper = styled.div<PredictionWrapperProps>`
   height: 100%;
   border-width: 0.5rem;
   border-style: solid;
-  border-color: ${({ prediction }) => PredictionColor[prediction]};
+  border-color: ${({ detections }) => DetectionColor[detections.status]};
   background: black;
   position: relative;
   display: flex;
@@ -77,6 +99,14 @@ const WebcamContainer = styled.div`
   flex-shrink: 1;
 `;
 
+const BoundingBoxContainer = styled.svg`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`;
+
 interface WebcamProps {
   loaded: boolean;
 }
@@ -86,7 +116,7 @@ const Webcam = styled.video<WebcamProps>`
   width: 100%;
   height: 100%;
   display: ${({ loaded }) => (loaded ? "block" : "none")};
-  transform: scaleX(-1);
+  /* transform: scaleX(-1); */
   flex-grow: 1;
 `;
 
