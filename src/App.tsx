@@ -6,7 +6,7 @@ import { useWebcam } from "./lib/useWebcam";
 import { useDetectionModel } from "./lib/useModels";
 import { getMessage } from "./lib/message";
 import { Detections, DetectionColor } from "./lib/Detection";
-import { Viruses } from "./components/Viruses";
+import { ArObjects } from "./components/ArObjects";
 
 export const App: React.FunctionComponent = () => {
   const detectionModel = useDetectionModel();
@@ -30,7 +30,7 @@ export const App: React.FunctionComponent = () => {
           <SvgContainer
             viewBox={`0 0 ${videoRef.current?.videoWidth} ${videoRef.current?.videoHeight}`}
           >
-            <Viruses detections={detections} videoRef={videoRef} />
+            <ArObjects detections={detections} videoRef={videoRef} />
           </SvgContainer>
         )}
       </WebcamContainer>

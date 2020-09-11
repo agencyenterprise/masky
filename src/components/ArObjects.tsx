@@ -7,23 +7,25 @@ import React, {
 import * as automl from "@tensorflow/tfjs-automl";
 
 import { Detections, DetectionStatus } from "../lib/Detection";
-import { Corona } from "./Corona";
+import corona from "../assets/corona.svg";
+import health from "../assets/health.svg";
 
-interface Virus {
+interface ArObject {
   x: number;
   y: number;
   dx: number;
   dy: number;
+  url: string;
 }
 
-export interface VirusesProps {
+export interface ArObjectsProps {
   detections: Detections;
   videoRef: React.MutableRefObject<HTMLVideoElement | null>;
 }
 
-interface VirusesState {
-  viruses: Virus[];
-  detections: automl.Box[];
+interface ArObjectsState {
+  objects: ArObject[];
+  detections: automl.PredictedObject[];
   video: { height: number; width: number };
 }
 
@@ -41,75 +43,54 @@ type EmptyAction<Type extends string> = {
   type: Type;
 };
 
-type VirusesAction =
-  | Action<"newVirus", Virus>
+type ArObjectsAction =
   | Action<"tick", number>
   | Action<"detections", Detections>
   | Action<"video", VideoDimensions>
   | EmptyAction<"generate">;
 
 const SPEED = 40;
-const VIRUS_FREQUENCY = 1000 * 0.5;
+const SPAWN_FREQUENCY = 1000 * 0.5;
 
-const reducer: Reducer<VirusesState, VirusesAction> = (state, action) => {
+const reducer: Reducer<ArObjectsState, ArObjectsAction> = (state, action) => {
   switch (action.type) {
-    case "newVirus": {
-      return { ...state, viruses: [...state.viruses, action.payload] };
-    }
     case "tick": {
-      const viruses = state.viruses
+      const objects = state.objects
         .filter(
-          (virus) =>
-            virus.x > 0 &&
-            virus.x < state.video.width &&
-            virus.y > 0 &&
-            virus.y < state.video.height
+          (object) =>
+            object.x > 0 &&
+            object.x < state.video.width &&
+            object.y > 0 &&
+            object.y < state.video.height
         )
-        .map((virus) => ({
-          ...virus,
-          x: virus.x + virus.dx * (1000 / action.payload),
-          y: virus.y + virus.dy * (1000 / action.payload),
+        .map((object) => ({
+          ...object,
+          x: object.x + object.dx * (1000 / action.payload),
+          y: object.y + object.dy * (1000 / action.payload),
         }));
-      return { ...state, viruses };
+      return { ...state, objects };
     }
     case "video": {
       return { ...state, video: action.payload };
     }
     case "generate": {
-      const newViruses = state.detections.map(
-        ({ top, left, height, width }) => {
-          const angle = 2 * Math.PI * Math.random();
-          const dx = SPEED * Math.cos(angle);
-          const dy = SPEED * Math.sin(angle);
-
-          return {
-            x: left + width / 2,
-            y: top + height * (2 / 3),
-            dx,
-            dy,
-          };
-        }
-      );
+      const newArObjects = state.detections.map(newArObject);
 
       return {
         ...state,
-        viruses: [...state.viruses, ...newViruses],
+        objects: [...state.objects, ...newArObjects],
       };
     }
     case "detections": {
-      const detections = action.payload.boxes
-        .filter((box) => box.label === DetectionStatus.Face)
-        .map((detection) => detection.box);
-
-      return { ...state, detections };
+      return { ...state, detections: action.payload.boxes };
     }
     default:
       throw new Error();
   }
 };
 
-const initialState = (): VirusesState => ({
-  viruses: [],
+const initialState = (): ArObjectsState => ({
+  objects: [],
   detections: [],
   video: {
     width: 0,
@@ -117,7 +98,7 @@ const initialState = (): VirusesState => ({
   },
 });
 
-export const Viruses: FunctionComponent<VirusesProps> = ({
+export const ArObjects: FunctionComponent<ArObjectsProps> = ({
   detections,
   videoRef,
 }) => {
@@ -125,21 +106,28 @@ export const Viruses: FunctionComponent<VirusesProps> = ({
 
   useDetections(detections, dispatch);
   useTick(dispatch);
-  useGenerateViruses(dispatch);
+  useGenerateArObjects(dispatch);
   useVideo(videoRef, dispatch);
 
-  const { viruses } = state;
+  const { objects } = state;
 
   return (
     <>
-      {viruses.map(({ x, y }) => (
-        <Corona id={`${x}, ${y}`} x={x} y={y} />
+      {objects.map(({ x, y, url }) => (
+        <image
+          id={`${x}, ${y}`}
+          x={x}
+          y={y}
+          href={url}
+          height={20}
+          width={20}
+        />
       ))}
     </>
   );
 };
 
-const useTick = (dispatch: React.Dispatch<VirusesAction>): void => {
+const useTick = (dispatch: React.Dispatch<ArObjectsAction>): void => {
   useEffect(() => {
     const nextFrame = (time: number) => {
       dispatch({ type: "tick", payload: time });
@@ -152,11 +140,11 @@ const useTick = (dispatch: React.Dispatch<VirusesAction>): void => {
   }, [dispatch]);
 };
 
-const useGenerateViruses = (dispatch: React.Dispatch<VirusesAction>) => {
+const useGenerateArObjects = (dispatch: React.Dispatch<ArObjectsAction>) => {
   useEffect(() => {
     const handle = setInterval(() => {
       dispatch({ type: "generate" });
-    }, VIRUS_FREQUENCY);
+    }, SPAWN_FREQUENCY);
 
     return () => clearInterval(handle);
   }, [dispatch]);
@@ -164,7 +152,7 @@ const useGenerateViruses = (dispatch: React.Dispatch<VirusesAction>) => {
 
 const useDetections = (
   detections: Detections,
-  dispatch: React.Dispatch<VirusesAction>
+  dispatch: React.Dispatch<ArObjectsAction>
 ): void => {
   useEffect(() => {
     dispatch({ type: "detections", payload: detections });
@@ -173,7 +161,7 @@ const useDetections = (
 
 const useVideo = (
   videoRef: React.MutableRefObject<HTMLVideoElement | null>,
-  dispatch: React.Dispatch<VirusesAction>
+  dispatch: React.Dispatch<ArObjectsAction>
 ) => {
   const width = videoRef.current?.videoWidth || 0;
   const height = videoRef.current?.videoHeight || 0;
@@ -183,7 +171,34 @@ const useVideo = (
   }, [width, height, dispatch]);
 };
 
-function randomChoice<T>(choices: T[]): T {
-  const index = Math.floor(Math.random() * choices.length);
-  return choices[index];
-}
+const newArObject = ({
+  label,
+  box: { top, left, height, width },
+}: automl.PredictedObject): ArObject => {
+  if (label === DetectionStatus.Face) {
+    const angle = 2 * Math.PI * Math.random();
+    const dx = SPEED * Math.cos(angle);
+    const dy = SPEED * Math.sin(angle);
+
+    return {
+      url: corona,
+      x: left + width / 2,
+      y: top + height * (2 / 3),
+      dx,
+      dy,
+    };
+  } else {
+    return {
+      url: health,
+      x: left + width * Math.random(),
+      y: top - 10,
+      dx: 0,
+      dy: -SPEED,
+    };
+  }
+};
+
+export const negativeOneToPositiveOne = () => {
+  const positive = Math.random() > 0.5;
+  return Math.random() * (positive ? 1 : -1);
+};
