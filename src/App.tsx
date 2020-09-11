@@ -5,20 +5,18 @@ import { useDetection } from "./lib/usePrediction";
 import { useWebcam } from "./lib/useWebcam";
 import { useDetectionModel } from "./lib/useModels";
 import { getMessage } from "./lib/message";
-import { Detections, DetectionColor, DetectionStatus } from "./lib/Detection";
-import { Viruses } from "./Viruses";
+import { Detections, DetectionColor } from "./lib/Detection";
+import { Viruses } from "./components/Viruses";
 
 export const App: React.FunctionComponent = () => {
   const detectionModel = useDetectionModel();
   const [videoRef, status, onVideoLoaded] = useWebcam();
   const detections = useDetection(detectionModel, videoRef, status);
 
-  const loaded = detections.status !== DetectionStatus.Loading;
-
   return (
     <PredictionWrapper detections={detections}>
       <GlobalStyle />
-      <Message size="h1">Mask Detector</Message>
+      <Message size="h1">Masky</Message>
       <WebcamContainer>
         <Webcam
           autoPlay
@@ -26,32 +24,14 @@ export const App: React.FunctionComponent = () => {
           playsInline
           ref={videoRef}
           onLoadedData={onVideoLoaded}
-          loaded={loaded}
         />
 
         {videoRef.current && (
-          <BoundingBoxContainer
+          <SvgContainer
             viewBox={`0 0 ${videoRef.current?.videoWidth} ${videoRef.current?.videoHeight}`}
           >
-            {detections.boxes.map((detection) => {
-              const { box, label } = detection;
-              const { left, top, width, height } = box;
-              return (
-                <rect
-                  key={`${left}-${top}-${width}-${height}`}
-                  x={left}
-                  y={top}
-                  width={width}
-                  height={height}
-                  stroke={DetectionColor[label as DetectionStatus]}
-                  fill="transparent"
-                  strokeWidth="5"
-                />
-              );
-            })}
-
             <Viruses detections={detections} videoRef={videoRef} />
-          </BoundingBoxContainer>
+          </SvgContainer>
         )}
       </WebcamContainer>
 
@@ -86,10 +66,7 @@ interface PredictionWrapperProps {
 const PredictionWrapper = styled.div<PredictionWrapperProps>`
   width: 100%;
   height: 100%;
-  border-width: 0.5rem;
-  border-style: solid;
-  border-color: ${({ detections }) => DetectionColor[detections.status]};
-  background: black;
+  background-color: ${({ detections }) => DetectionColor[detections.status]};
   position: relative;
   display: flex;
   flex-direction: column;
@@ -102,24 +79,20 @@ const WebcamContainer = styled.div`
   flex-shrink: 1;
 `;
 
-const BoundingBoxContainer = styled.svg`
+const SvgContainer = styled.svg`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  transform: scaleX(-1);
 `;
 
-interface WebcamProps {
-  loaded: boolean;
-}
-
-const Webcam = styled.video<WebcamProps>`
+const Webcam = styled.video`
   position: absolute;
   width: 100%;
   height: 100%;
-  display: ${({ loaded }) => (loaded ? "block" : "none")};
-  /* transform: scaleX(-1); */
+  transform: scaleX(-1);
   flex-grow: 1;
 `;
 

@@ -18,11 +18,11 @@ export enum DetectionStatus {
 }
 
 export const DetectionColor: Record<DetectionStatus, string> = {
-  [DetectionStatus.Loading]: "black",
-  [DetectionStatus.Face]: "red",
-  [DetectionStatus.Mask]: "green",
-  [DetectionStatus.Both]: "orange",
-  [DetectionStatus.None]: "black",
+  [DetectionStatus.Loading]: "#032B43",
+  [DetectionStatus.Face]: "#D00000",
+  [DetectionStatus.Mask]: "#136F63",
+  [DetectionStatus.Both]: "#FFBA08",
+  [DetectionStatus.None]: "#032B43",
 };
 
 export const DetectionMessage: Record<DetectionStatus, string> = {

@@ -6,7 +6,7 @@ import React, {
 } from "react";
 import * as automl from "@tensorflow/tfjs-automl";
 
-import { Detections, DetectionStatus } from "./lib/Detection";
+import { Detections, DetectionStatus } from "../lib/Detection";
 import { Corona } from "./Corona";
 
 interface Virus {
@@ -27,12 +27,26 @@ interface VirusesState {
   video: { height: number; width: number };
 }
 
+interface VideoDimensions {
+  width: number;
+  height: number;
+}
+
+type Action<Type extends string, Payload> = {
+  type: Type;
+  payload: Payload;
+};
+
+type EmptyAction<Type extends string> = {
+  type: Type;
+};
+
 type VirusesAction =
-  | { type: "newVirus"; payload: Virus }
-  | { type: "tick"; payload: number }
-  | { type: "detections"; payload: Detections }
-  | { type: "generate" }
-  | { type: "video"; payload: { width: number; height: number } };
+  | Action<"newVirus", Virus>
+  | Action<"tick", number>
+  | Action<"detections", Detections>
+  | Action<"video", VideoDimensions>
+  | EmptyAction<"generate">;
 
 const SPEED = 40;
 const VIRUS_FREQUENCY = 1000 * 0.5;
@@ -69,7 +83,7 @@ const reducer: Reducer<VirusesState, VirusesAction> = (state, action) => {
           const dy = SPEED * Math.sin(angle);
 
           return {
-            x: randomChoice([left - 50, left + width + 50]),
+            x: left + width / 2,
             y: top + height * (2 / 3),
             dx,
             dy,
