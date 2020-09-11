@@ -6,6 +6,7 @@ import { useWebcam } from "./lib/useWebcam";
 import { useDetectionModel } from "./lib/useModels";
 import { getMessage } from "./lib/message";
 import { Detections, DetectionColor, DetectionStatus } from "./lib/Detection";
+import { Viruses } from "./Viruses";
 
 export const App: React.FunctionComponent = () => {
   const detectionModel = useDetectionModel();
@@ -48,6 +49,8 @@ export const App: React.FunctionComponent = () => {
                 />
               );
             })}
+
+            <Viruses detections={detections} videoRef={videoRef} />
           </BoundingBoxContainer>
         )}
       </WebcamContainer>
