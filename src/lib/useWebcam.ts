@@ -1,25 +1,18 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState } from "react";
 
-export type WebcamStatus = "waiting" | "connected" | "failed" | "ready";
+export type WebcamStatus = "waiting" | "connected" | "failed";
 
-export const WebcamStatusMessage = {
-  waiting: "Waiting for camera...",
-  connected: "Starting predictions...",
-  failed: "Couldn't connect to camera.",
-  ready: "Setting up model...",
-};
+const defaultVideoConstraints = { facingMode: "user" };
 
-export const useWebcam = (): [
-  React.MutableRefObject<HTMLVideoElement | null>,
-  WebcamStatus,
-  () => void
-] => {
+export const useWebcam = (
+  videoConstraints: MediaTrackConstraints = defaultVideoConstraints
+): [React.MutableRefObject<HTMLVideoElement | null>, WebcamStatus] => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [status, setStatus] = useState<WebcamStatus>("waiting");
 
   useEffect(() => {
     navigator.mediaDevices
-      .getUserMedia({ video: { facingMode: "user" } })
+      .getUserMedia({ video: videoConstraints })
       .then((stream) => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -33,9 +26,7 @@ export const useWebcam = (): [
         console.error(error);
         setStatus("failed");
       });
-  }, []);
+  }, [videoConstraints]);
 
-  const onReady = useCallback(() => setStatus("ready"), []);
-
-  return [videoRef, status, onReady];
+  return [videoRef, status];
 };

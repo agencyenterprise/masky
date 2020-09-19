@@ -1,20 +1,28 @@
 import React from "react";
 import styled, { createGlobalStyle } from "styled-components/macro";
 
-import { useDetection } from "./lib/usePrediction";
+import { useDetection } from "./lib/useDetection";
 import { useWebcam } from "./lib/useWebcam";
 import { useDetectionModel } from "./lib/useModels";
 import { getMessage } from "./lib/message";
-import { Detections, DetectionColor } from "./lib/Detection";
+import {
+  Detections,
+  DetectionColor,
+  calculateDetections,
+} from "./lib/Detection";
 import { ArObjects } from "./components/ArObjects";
 
+const modelUrl = `${process.env.REACT_APP_MODEL_URL}/model.json`;
+
 export const App: React.FunctionComponent = () => {
-  const detectionModel = useDetectionModel();
-  const [videoRef, status, onVideoLoaded] = useWebcam();
-  const detections = useDetection(detectionModel, videoRef, status);
+  const detectionModel = useDetectionModel(modelUrl);
+  const [videoRef, status] = useWebcam();
+  const [detections, onWebcamReady] = useDetection(detectionModel, videoRef);
+
+  const d = calculateDetections(detections);
 
   return (
-    <PredictionWrapper detections={detections}>
+    <PredictionWrapper detections={d}>
       <GlobalStyle />
       <Message size="h1">Masky</Message>
       <WebcamContainer>
@@ -23,19 +31,19 @@ export const App: React.FunctionComponent = () => {
           muted
           playsInline
           ref={videoRef}
-          onLoadedData={onVideoLoaded}
+          onLoadedData={onWebcamReady}
         />
 
         {videoRef.current && (
           <SvgContainer
             viewBox={`0 0 ${videoRef.current?.videoWidth} ${videoRef.current?.videoHeight}`}
           >
-            <ArObjects detections={detections} videoRef={videoRef} />
+            <ArObjects detections={d} videoRef={videoRef} />
           </SvgContainer>
         )}
       </WebcamContainer>
 
-      <Message size="h2">{getMessage(detections, status)}</Message>
+      <Message size="h2">{getMessage(d, status)}</Message>
     </PredictionWrapper>
   );
 };

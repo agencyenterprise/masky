@@ -19,17 +19,13 @@ export const DetectionColor: Record<DetectionStatus, string> = {
   none: "#032B43",
 };
 
-export const DetectionMessage: Record<DetectionStatus, string> = {
-  loading: "Starting predictions...",
-  none: "I'm not sure. Try getting closer to the screen.",
-  both: "Ask your friends to put on a mask!",
-  face: "Don't forget your mask!",
-  mask: "Thanks for wearing a mask!",
-};
-
 export const calculateDetections = (
-  detections: automl.PredictedObject[]
+  detections: automl.PredictedObject[] | null
 ): Detections => {
+  if (!detections) {
+    return defaultDetections;
+  }
+
   const boxes = detections.filter(
     (detection) => detection.score > DETECTION_THRESHOLD
   );

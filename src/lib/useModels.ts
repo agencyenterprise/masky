@@ -1,18 +1,12 @@
 import { useState, useEffect } from "react";
 import * as automl from "@tensorflow/tfjs-automl";
 
-export const useDetectionModel = () => {
+export const useDetectionModel = (modelUrl: string) => {
   const [model, setModel] = useState<automl.ObjectDetectionModel | null>(null);
 
   useEffect(() => {
-    loadDetectionModel().then(setModel);
-  }, []);
+    automl.loadObjectDetection(modelUrl).then(setModel);
+  }, [modelUrl]);
 
   return model;
-};
-
-const loadDetectionModel = (): Promise<automl.ObjectDetectionModel> => {
-  return automl.loadObjectDetection(
-    `${process.env.REACT_APP_MODEL_URL}/model.json`
-  );
 };
