@@ -1,17 +1,12 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 
-export enum WebcamStatus {
-  Waiting = "waiting",
-  Connected = "connected",
-  Failed = "failed",
-  Ready = "ready",
-}
+export type WebcamStatus = "waiting" | "connected" | "failed" | "ready";
 
 export const WebcamStatusMessage = {
-  [WebcamStatus.Waiting]: "Waiting for camera...",
-  [WebcamStatus.Connected]: "Starting predictions...",
-  [WebcamStatus.Failed]: "Couldn't connect to camera.",
-  [WebcamStatus.Ready]: "Setting up model...",
+  waiting: "Waiting for camera...",
+  connected: "Starting predictions...",
+  failed: "Couldn't connect to camera.",
+  ready: "Setting up model...",
 };
 
 export const useWebcam = (): [
@@ -20,7 +15,7 @@ export const useWebcam = (): [
   () => void
 ] => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [status, setStatus] = useState<WebcamStatus>(WebcamStatus.Waiting);
+  const [status, setStatus] = useState<WebcamStatus>("waiting");
 
   useEffect(() => {
     navigator.mediaDevices
@@ -28,19 +23,19 @@ export const useWebcam = (): [
       .then((stream) => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
-          setStatus(WebcamStatus.Connected);
+          setStatus("connected");
         } else {
           console.error("Webcam connected before video was ready.");
-          setStatus(WebcamStatus.Failed);
+          setStatus("failed");
         }
       })
       .catch((error) => {
         console.error(error);
-        setStatus(WebcamStatus.Failed);
+        setStatus("failed");
       });
   }, []);
 
-  const onReady = useCallback(() => setStatus(WebcamStatus.Ready), []);
+  const onReady = useCallback(() => setStatus("ready"), []);
 
   return [videoRef, status, onReady];
 };

@@ -9,31 +9,27 @@ export interface Detections {
   boxes: automl.PredictedObject[];
 }
 
-export enum DetectionStatus {
-  Loading = "loading",
-  None = "none",
-  Face = "face",
-  Mask = "mask",
-  Both = "both",
-}
+export type DetectionStatus = "loading" | "none" | "face" | "mask" | "both";
 
 export const DetectionColor: Record<DetectionStatus, string> = {
-  [DetectionStatus.Loading]: "#032B43",
-  [DetectionStatus.Face]: "#D00000",
-  [DetectionStatus.Mask]: "#136F63",
-  [DetectionStatus.Both]: "#FFBA08",
-  [DetectionStatus.None]: "#032B43",
+  loading: "#032B43",
+  face: "#D00000",
+  mask: "#136F63",
+  both: "#FFBA08",
+  none: "#032B43",
 };
 
 export const DetectionMessage: Record<DetectionStatus, string> = {
-  [DetectionStatus.Loading]: "Starting predictions...",
-  [DetectionStatus.None]: "I'm not sure. Try getting closer to the screen.",
-  [DetectionStatus.Both]: "Ask your friends to put on a mask!",
-  [DetectionStatus.Face]: "Don't forget your mask!",
-  [DetectionStatus.Mask]: "Thanks for wearing a mask!",
+  loading: "Starting predictions...",
+  none: "I'm not sure. Try getting closer to the screen.",
+  both: "Ask your friends to put on a mask!",
+  face: "Don't forget your mask!",
+  mask: "Thanks for wearing a mask!",
 };
 
-export const calculateDetections = (detections: automl.PredictedObject[]) => {
+export const calculateDetections = (
+  detections: automl.PredictedObject[]
+): Detections => {
   const boxes = detections.filter(
     (detection) => detection.score > DETECTION_THRESHOLD
   );
@@ -47,19 +43,19 @@ export const calculateDetections = (detections: automl.PredictedObject[]) => {
 
 const statusFromCounts = (masks: number, faces: number): DetectionStatus => {
   if (masks > 0 && faces > 0) {
-    return DetectionStatus.Both;
+    return "both";
   }
   if (masks > 0) {
-    return DetectionStatus.Mask;
+    return "mask";
   }
   if (faces > 0) {
-    return DetectionStatus.Face;
+    return "face";
   }
-  return DetectionStatus.None;
+  return "none";
 };
 
 export const defaultDetections: Detections = {
-  status: DetectionStatus.Loading,
+  status: "loading",
   masks: 0,
   faces: 0,
   boxes: [],

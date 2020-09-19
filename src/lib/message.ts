@@ -1,11 +1,11 @@
 import { WebcamStatus, WebcamStatusMessage } from "./useWebcam";
-import { Detections, DetectionMessage, DetectionStatus } from "./Detection";
+import { Detections, DetectionMessage } from "./Detection";
 
 export const getMessage = (
   detections: Detections,
   webcamStatus: WebcamStatus
 ): string => {
-  if (detections.status === DetectionStatus.Loading) {
+  if (detections.status === "loading") {
     return WebcamStatusMessage[webcamStatus];
   } else {
     return DetectionMessage[detections.status];

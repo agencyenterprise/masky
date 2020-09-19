@@ -25,7 +25,7 @@ export const useDetection = (
   ]);
 
   useEffect(() => {
-    if (webcamStatus !== WebcamStatus.Ready) return;
+    if (webcamStatus !== 'ready') return;
 
     const handle = setInterval(onInterval, DETECTIONS_TIME);
     return () => {

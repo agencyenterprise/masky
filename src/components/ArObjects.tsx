@@ -6,11 +6,12 @@ import React, {
 } from "react";
 import * as automl from "@tensorflow/tfjs-automl";
 
-import { Detections, DetectionStatus } from "../lib/Detection";
+import { Detections} from "../lib/Detection";
 import corona from "../assets/corona.svg";
 import health from "../assets/health.svg";
 
 interface ArObject {
+  id: number;
   x: number;
   y: number;
   dx: number;
@@ -51,6 +52,7 @@ type ArObjectsAction =
 
 const SPEED = 40;
 const SPAWN_FREQUENCY = 1000 * 0.5;
+const MAX_AR_OBJECTS = 20;
 
 const reducer: Reducer<ArObjectsState, ArObjectsAction> = (state, action) => {
   switch (action.type) {
@@ -63,6 +65,7 @@ const reducer: Reducer<ArObjectsState, ArObjectsAction> = (state, action) => {
             object.y > 0 &&
             object.y < state.video.height
         )
+        .slice(0, MAX_AR_OBJECTS)
         .map((object) => ({
           ...object,
           x: object.x + object.dx * (1000 / action.payload),
@@ -78,7 +81,7 @@ const reducer: Reducer<ArObjectsState, ArObjectsAction> = (state, action) => {
 
       return {
         ...state,
-        objects: [...state.objects, ...newArObjects],
+        objects: [...newArObjects, ...state.objects],
       };
     }
     case "detections": {
@@ -113,15 +116,8 @@ export const ArObjects: FunctionComponent<ArObjectsProps> = ({
 
   return (
     <>
-      {objects.map(({ x, y, url }) => (
-        <image
-          id={`${x}, ${y}`}
-          x={x}
-          y={y}
-          href={url}
-          height={20}
-          width={20}
-        />
+      {objects.map(({ id, x, y, url }) => (
+        <image key={id} x={x} y={y} href={url} height={20} width={20} />
       ))}
     </>
   );
@@ -175,12 +171,13 @@ const newArObject = ({
   label,
   box: { top, left, height, width },
 }: automl.PredictedObject): ArObject => {
-  if (label === DetectionStatus.Face) {
+  if (label === 'face') {
     const angle = 2 * Math.PI * Math.random();
     const dx = SPEED * Math.cos(angle);
     const dy = SPEED * Math.sin(angle);
 
     return {
+      id: uniqueId(),
       url: corona,
       x: left + width / 2,
       y: top + height * (2 / 3),
@@ -189,6 +186,7 @@ const newArObject = ({
     };
   } else {
     return {
+      id: uniqueId(),
       url: health,
       x: left + width * Math.random(),
       y: top - 10,
@@ -202,3 +200,6 @@ export const negativeOneToPositiveOne = () => {
   const positive = Math.random() > 0.5;
   return Math.random() * (positive ? 1 : -1);
 };
+
+let id = 0;
+const uniqueId = () => id++;
