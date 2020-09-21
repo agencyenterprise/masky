@@ -1321,17 +1321,6 @@
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-converter/-/tfjs-converter-2.3.0.tgz#359a8cbb5da78c7aefcf5045b4db3754d9846965"
 
-"@tensorflow/tfjs-core@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-core/-/tfjs-core-1.7.0.tgz#9207c8f2481c52a6a40135a6aaf21a9bb0339bdf"
-  dependencies:
-    "@types/offscreencanvas" "~2019.3.0"
-    "@types/seedrandom" "2.4.27"
-    "@types/webgl-ext" "0.0.30"
-    "@types/webgl2" "0.0.4"
-    node-fetch "~2.1.2"
-    seedrandom "2.4.3"
-
 "@tensorflow/tfjs-core@2.3.0":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-core/-/tfjs-core-2.3.0.tgz#272f9e6c143c6ff8c092aacf98707cec49d1bd2d"
@@ -4170,13 +4159,6 @@ extsprintf@^1.2.0:
 eyes@0.1.x:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/eyes/-/eyes-0.1.8.tgz#62cf120234c683785d902348a800ef3e0cc20bc0"
-
-face-api.js@^0.22.2:
-  version "0.22.2"
-  resolved "https://registry.yarnpkg.com/face-api.js/-/face-api.js-0.22.2.tgz#5accbf7e53b1569685d116a7e18dbc4800770d39"
-  dependencies:
-    "@tensorflow/tfjs-core" "1.7.0"
-    tslib "^1.11.1"
 
 fast-deep-equal@^3.1.1:
   version "3.1.1"
@@ -9386,10 +9368,6 @@ ts-pnp@1.1.6, ts-pnp@^1.1.6:
 tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.11.1.tgz#eb15d128827fbee2841549e171f45ed338ac7e35"
-
-tslib@^1.11.1:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
 
 tsutils@^3.17.1:
   version "3.17.1"

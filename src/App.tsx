@@ -3,7 +3,7 @@ import styled, { createGlobalStyle } from "styled-components/macro";
 
 import { useDetection } from "./lib/useDetection";
 import { useWebcam } from "./lib/useWebcam";
-import { useDetectionModel } from "./lib/useModels";
+import { useDetectionModel } from "./lib/useDetectionModel";
 import { getMessage } from "./lib/message";
 import {
   Detections,
@@ -17,33 +17,33 @@ const modelUrl = `${process.env.REACT_APP_MODEL_URL}/model.json`;
 export const App: React.FunctionComponent = () => {
   const detectionModel = useDetectionModel(modelUrl);
   const [videoRef, status] = useWebcam();
-  const [detections, onWebcamReady] = useDetection(detectionModel, videoRef);
+  const [detections, onVideoReady] = useDetection(detectionModel, videoRef);
 
-  const d = calculateDetections(detections);
+  const detectedObjects = calculateDetections(detections);
 
   return (
-    <PredictionWrapper detections={d}>
+    <PredictionWrapper detections={detectedObjects}>
       <GlobalStyle />
       <Message size="h1">Masky</Message>
-      <WebcamContainer>
-        <Webcam
+      <VideoContainer>
+        <Video
           autoPlay
           muted
           playsInline
           ref={videoRef}
-          onLoadedData={onWebcamReady}
+          onLoadedData={onVideoReady}
         />
 
         {videoRef.current && (
           <SvgContainer
             viewBox={`0 0 ${videoRef.current?.videoWidth} ${videoRef.current?.videoHeight}`}
           >
-            <ArObjects detections={d} videoRef={videoRef} />
+            <ArObjects detections={detectedObjects} videoRef={videoRef} />
           </SvgContainer>
         )}
-      </WebcamContainer>
+      </VideoContainer>
 
-      <Message size="h2">{getMessage(d, status)}</Message>
+      <Message size="h2">{getMessage(detectedObjects, status)}</Message>
     </PredictionWrapper>
   );
 };
@@ -81,10 +81,18 @@ const PredictionWrapper = styled.div<PredictionWrapperProps>`
   justify-content: space-between;
 `;
 
-const WebcamContainer = styled.div`
+const VideoContainer = styled.div`
   position: relative;
   flex-grow: 1;
   flex-shrink: 1;
+`;
+
+const Video = styled.video`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(-1);
+  flex-grow: 1;
 `;
 
 const SvgContainer = styled.svg`
@@ -94,14 +102,6 @@ const SvgContainer = styled.svg`
   width: 100%;
   height: 100%;
   transform: scaleX(-1);
-`;
-
-const Webcam = styled.video`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  transform: scaleX(-1);
-  flex-grow: 1;
 `;
 
 const MessageSize = {
