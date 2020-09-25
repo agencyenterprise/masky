@@ -1,4 +1,4 @@
-# Masky
+# Doctor Masky
 
 A webapp for doing client-side COVID mask detection.
 

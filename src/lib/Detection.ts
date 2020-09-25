@@ -12,11 +12,11 @@ export interface Detections {
 export type DetectionStatus = "loading" | "none" | "face" | "mask" | "both";
 
 export const DetectionColor: Record<DetectionStatus, string> = {
-  loading: "#032B43",
-  face: "#D00000",
-  mask: "#136F63",
-  both: "#FFBA08",
-  none: "#032B43",
+  loading: "secondary",
+  face: "noMask",
+  mask: "yesMask",
+  both: "mixedMasks",
+  none: "secondary",
 };
 
 export const calculateDetections = (

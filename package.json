@@ -3,17 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/core": "^10.0.35",
+    "@emotion/styled": "^10.0.27",
+    "@rebass/preset": "^4.0.5",
     "@tensorflow/tfjs": "^2.3.0",
     "@tensorflow/tfjs-automl": "^1.0.0",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
-    "@types/styled-components": "^5.1.2",
-    "babel-plugin-styled-components": "^1.11.1",
+    "@types/rebass": "^4.0.6",
+    "emotion-theming": "^10.0.27",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3",
-    "styled-components": "^5.1.1",
+    "rebass": "^4.0.7",
     "typescript": "~3.7.2"
   },
   "scripts": {
