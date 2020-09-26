@@ -45,7 +45,6 @@ yarn deploy
 
 Deploys the build file to [Surge](https://surge.sh)
 
-
 ## CORS
 
 To set up Google buckets CORS, update the `cors.json` file and run

@@ -1,5 +1,5 @@
 {
-  "name": "mask-classifier-react",
+  "name": "doctor-masky",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -23,9 +23,15 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "test:coverage": "yarn test --watchAll=false --coverage",
     "eject": "craco eject",
-    "format": "prettier --write '**/*.{ts,tsx,css,html,md,json}'",
-    "deploy": "surge ./build --domain https://masky.surge.sh",
+    "lint": "yarn lint:eslint && yarn lint:prettier",
+    "lint:eslint": "eslint src/**/*.{ts,tsx}  --max-warnings 0",
+    "lint:prettier": "prettier --check '**/*.{ts,tsx,css,html,md,json}'",
+    "format": "yarn format:prettier && yarn format:eslint",
+    "format:eslint": "eslint --fix src/**/*.{ts,tsx}  --max-warnings 0",
+    "format:prettier": "prettier --write '**/*.{ts,tsx,css,html,md,json}'",
+    "deploy": "gh-pages --dist ./build",
     "cors:get": "gsutil cors get gs://masky-model",
     "cors:set": "gsutil cors set ./cors.json gs://masky-model"
   },
@@ -51,6 +57,7 @@
     "@testing-library/user-event": "^7.1.2",
     "@types/jest": "^24.0.0",
     "eslint-config-prettier": "^6.11.0",
+    "gh-pages": "^3.1.0",
     "prettier": "^2.0.5",
     "surge": "^0.21.6"
   }

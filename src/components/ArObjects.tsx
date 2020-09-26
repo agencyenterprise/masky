@@ -6,7 +6,7 @@ import React, {
 } from "react";
 import * as automl from "@tensorflow/tfjs-automl";
 
-import { Detections} from "../lib/Detection";
+import { Detections } from "../lib/Detection";
 import corona from "../assets/corona.svg";
 import health from "../assets/health.svg";
 
@@ -171,7 +171,7 @@ const newArObject = ({
   label,
   box: { top, left, height, width },
 }: automl.PredictedObject): ArObject => {
-  if (label === 'face') {
+  if (label === "face") {
     const angle = 2 * Math.PI * Math.random();
     const dx = SPEED * Math.cos(angle);
     const dy = SPEED * Math.sin(angle);

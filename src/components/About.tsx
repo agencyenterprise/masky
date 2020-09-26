@@ -31,8 +31,8 @@ export const About: FunctionComponent = () => {
 
         <Text variant="body">
           We promise we're not. Your video stream never leaves your device, and
-          all the mask detecting is happing right there on your machine. 
-          Doctor Masky is always with you.
+          all the mask detecting is happing right there on your machine. Doctor
+          Masky is always with you.
         </Text>
 
         <Heading variant="heading" mt={3} mb={2}>
