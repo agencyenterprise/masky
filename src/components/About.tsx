@@ -40,19 +40,24 @@ export const About: FunctionComponent = () => {
         </Heading>
 
         <Text variant="body">
-          If you want to get technical, we used
-          <Link href="" color="secondary">
+          If you want to get technical, we used{" "}
+          <Link href="https://cloud.google.com/automl" color="secondary">
             Google AutoML Vision
-          </Link>
-          to train the model, TensorFlow.js to run the inferences, and React to
-          put it all together. You can read more in{" "}
+          </Link>{" "}
+          to train the model,{" "}
+          <Link href="https://www.tensorflow.org/js" color="secondary">
+            TensorFlow.js
+          </Link>{" "}
+          to run the inferences, and React to put it all together. You can read
+          more in{" "}
           <Link href="" color="secondary">
             this blog post
-          </Link>
+          </Link>{" "}
+          (coming soon).
         </Text>
 
         <Text variant="body">
-          If you don't want to get technical, then it's magic&nbsp;
+          If you don't want to get technical, then it's magic{" "}
           <span role="img" aria-label="sparkles">
             ✨
           </span>
@@ -81,14 +86,14 @@ export const About: FunctionComponent = () => {
         <Text variant="body">
           We're AE Studio, and we care about increasing human agency. We know
           you want to help protect people, and we think this is a fun way to
-          remind yourself.
+          remind yourself to do it.
         </Text>
 
         <Text variant="body">
           Also, if you've got a human-agency increasing data science project,
-          we'd love to&nbsp;
-          <Link href="mailto:info@ae.studio" color="secondary">
-            help build it!
+          we'd love to{" "}
+          <Link href="https://ae.studio" color="secondary">
+            help you build it!
           </Link>
         </Text>
       </Box>
