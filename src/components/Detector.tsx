@@ -2,7 +2,7 @@
 import { jsx } from "@emotion/core";
 import styled from "@emotion/styled";
 import { Box, Text, Flex, Image } from "rebass";
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent } from "react";
 
 import { ArObjects } from "./ArObjects";
 import { AudioIcon } from "./AudioIcon";
@@ -10,7 +10,8 @@ import { calculateDetections } from "../lib/Detection";
 import { Footer } from "./Footer";
 import { getMessage } from "../lib/message";
 import { PredictionWrapper } from "./PredictionWrapper";
-import { useAudio } from "./AudioPlayer";
+import { useAudio } from "../lib/useAudio";
+import { useCanPlayAudio } from "../lib/useCanPlayAudio";
 import { useDetection } from "../lib/useDetection";
 import { useDetectionModel } from "../lib/useDetectionModel";
 import { useWebcam } from "../lib/useWebcam";
@@ -29,7 +30,7 @@ export const Detector: FunctionComponent = () => {
 
   const detectedObjects = calculateDetections(detections);
 
-  const [canPlay, setCanPlay] = useState(true);
+  const [canPlay, setCanPlay] = useCanPlayAudio();
 
   useAudio({
     src: "assets/coronavirus.mp3",
