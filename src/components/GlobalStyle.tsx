@@ -5,12 +5,14 @@ export const GlobalStyle = () => {
   return (
     <Global
       styles={css`
-        body {
-          margin: 0;
+        html,
+        body,
+        #root {
+          height: 100%;
         }
 
-        html {
-          height: -webkit-fill-available;
+        body {
+          margin: 0;
         }
       `}
     />

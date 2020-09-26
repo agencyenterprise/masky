@@ -31,48 +31,47 @@ export const Detector: FunctionComponent = () => {
   const detectedObjects = calculateDetections(detections);
 
   return (
-    <Box color="primary">
-      <PredictionWrapper detections={detectedObjects}>
-        <Flex justifyContent="center" alignItems="center" p={2}>
-          <Image height={[40, 60, 80]} mr={3} src={logo} />
-          <Text color="primary" textAlign="center" variant="display">
-            Doctor Masky
-          </Text>
-        </Flex>
+    <PredictionWrapper detections={detectedObjects}>
+      <Flex justifyContent="center" alignItems="center" p={2}>
+        <Image height={[40, 60, 80]} mr={3} src={logo} />
+        <Text color="primary" textAlign="center" variant="display">
+          Doctor Masky
+        </Text>
+      </Flex>
 
-        <VideoContainer>
-          <Video
-            autoPlay
-            muted
-            playsInline
-            ref={videoRef}
-            onLoadedData={onVideoReady}
-          />
+      <VideoContainer>
+        <Video
+          autoPlay
+          muted
+          playsInline
+          hide={!detections}
+          ref={videoRef}
+          onLoadedData={onVideoReady}
+        />
 
-          {videoRef.current && (
-            <SvgContainer
-              viewBox={`0 0 ${videoRef.current?.videoWidth} ${videoRef.current?.videoHeight}`}
-            >
-              <ArObjects detections={detectedObjects} videoRef={videoRef} />
-            </SvgContainer>
-          )}
-        </VideoContainer>
-
-        <Box>
-          <Text
-            fontSize={[3, 4, 5]}
-            color="primary"
-            textAlign="center"
-            variant="heading"
-            paddingY={3}
+        {videoRef.current && (
+          <SvgContainer
+            viewBox={`0 0 ${videoRef.current?.videoWidth} ${videoRef.current?.videoHeight}`}
           >
-            {getMessage(detectedObjects, status)}
-          </Text>
+            <ArObjects detections={detectedObjects} videoRef={videoRef} />
+          </SvgContainer>
+        )}
+      </VideoContainer>
 
-          <Footer />
-        </Box>
-      </PredictionWrapper>
-    </Box>
+      <Box>
+        <Text
+          fontSize={[3, 4, 5]}
+          color="primary"
+          textAlign="center"
+          variant="heading"
+          paddingY={3}
+        >
+          {getMessage(detectedObjects, status)}
+        </Text>
+
+        <Footer />
+      </Box>
+    </PredictionWrapper>
   );
 };
 
@@ -88,9 +87,7 @@ const PredictionWrapper: FunctionComponent<PredictionWrapperProps> = ({
     <Flex
       bg={DetectionColor[detections.status]}
       width="100%"
-      height="100vh"
-      // mobile viewport bug fix
-      maxHeight="-webkit-fill-available"
+      height="100%"
       flexDirection="column"
       justifyContent="space-between"
       sx={{
@@ -108,12 +105,13 @@ const VideoContainer = styled.div`
   flex-shrink: 1;
 `;
 
-const Video = styled.video`
+const Video = styled.video<{ hide: boolean }>`
   position: absolute;
   width: 100%;
   height: 100%;
   transform: scaleX(-1);
   flex-grow: 1;
+  display: ${({ hide }) => (hide ? "none" : "block")};
 `;
 
 const SvgContainer = styled.svg`
