@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100mm" height="100mm" version="1.1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g transform="translate(113.17 22.543)">
+  <g>
+   <path d="m-93.248 30.843c16.139-0.31613 18.245-8.1565 29.717-8.1145 11.943-0.10378 11.488 8.2381 30.434 8.1145v37.112c-18.566 11.864-38.418 13.448-60.151 0z" fill="#ffba08" stroke-width=".16326"/>
+   <path d="m-93.248 67.956c-10.868 0-19.924-8.2241-19.924-18.557 0-10.333 9.0561-18.556 19.924-18.556v5.043c-8.3502 0-14.874 6.1341-14.874 13.513 0 7.3786 6.524 13.514 14.874 13.514z" color="#000000" color-rendering="auto" dominant-baseline="auto" fill="#ffeab5" image-rendering="auto" shape-rendering="auto" solid-color="#000000" stop-color="#000000" style="font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;font-variation-settings:normal;inline-size:0;isolation:auto;mix-blend-mode:normal;shape-margin:0;shape-padding:0;text-decoration-color:#000000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal"/>
+   <path d="m-33.096 67.956c10.868 0 19.924-8.2241 19.924-18.557 0-10.333-9.0561-18.556-19.924-18.556v5.043c8.3502 0 14.874 6.1341 14.874 13.513 0 7.3786-6.524 13.514-14.874 13.514z" color="#000000" color-rendering="auto" dominant-baseline="auto" fill="#ffeab5" image-rendering="auto" shape-rendering="auto" solid-color="#000000" stop-color="#000000" style="font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;font-variation-settings:normal;inline-size:0;isolation:auto;mix-blend-mode:normal;shape-margin:0;shape-padding:0;text-decoration-color:#000000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal"/>
+   <path d="m-63.53 22.729c-11.472-0.04203-13.579 7.7985-29.717 8.1147v37.112c10.451 6.4667 20.467 9.4561 30.114 9.4994v-54.725c-0.13114-8.82e-4 -0.26199-0.0022-0.39621-0.0011z" fill="#ffcf52" stroke-width=".16326"/>
+  </g>
+  <g fill="#fff5dc" fill-opacity=".72581">
+   <rect x="-75.589" y="47.751" width="24.762" height="4.8114" ry="2.4057"/>
+   <path d="m-78.977 37.944c5.6786 0.37595 10.694-3.2488 15.84-4.7363 4.7418 1.9978 9.8355 4.9765 15.698 4.7363 1.3332-0.05464 2.4086 1.0729 2.4086 2.4057 0 1.3328-1.0769 2.4898-2.4086 2.4057-5.4256-0.34252-10.823-2.4671-15.698-4.7363-5.12 2.2958-10.44 4.6759-15.84 4.7363-1.3343 0.01491-2.4086-1.0729-2.4086-2.4057 0-1.3327 1.0772-2.4938 2.4086-2.4057z"/>
+   <rect x="-70.671" y="59.212" width="14.926" height="4.8114" ry="2.4057"/>
+  </g>
+  <rect x="-113.17" y="-8.6338" width="100" height="11.444" ry="1.5664" fill="#ffba08" stroke-width=".14173"/>
+  <g fill-rule="evenodd">
+   <ellipse cx="-63.172" cy="-2.9116" rx="19.846" ry="19.631" fill="#032b43" stroke-width=".14393"/>
+   <ellipse cx="-63.172" cy="-2.9116" rx="16.136" ry="15.961" fill="#f2f2f2" stroke-width=".11702"/>
+   <ellipse cx="-63.172" cy="-2.9116" rx="5.7884" ry="5.7258" fill="#032b43" stroke-width=".041978"/>
+  </g>
+ </g>
+</svg>
