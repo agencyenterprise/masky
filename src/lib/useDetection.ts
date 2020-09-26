@@ -28,6 +28,10 @@ export const useDetection = (
     const video = videoRef.current;
     if (!videoReady || !model || !video) return;
 
+    // First run
+    model.detect(video).then(setDetections);
+
+    // Schedule detections.
     const handle = setInterval(
       () => model.detect(video).then(setDetections),
       detectionInterval

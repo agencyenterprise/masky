@@ -1,14 +1,23 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 export interface UseAudioProps {
   src: string;
   playing: boolean;
+  started: boolean;
 }
 
-export const useAudio = ({ src, playing }: UseAudioProps) => {
-  const audio = useMemo(() => new Audio(src), [src]);
+export const useAudio = ({ src, playing, started }: UseAudioProps) => {
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    if (started) {
+      setAudio(new Audio(src));
+    }
+  }, [started, src]);
+
+  useEffect(() => {
+    if (!audio) return;
+
     if (playing) {
       audio.play();
     } else {

@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 import styled from "@emotion/styled";
-import { Box, Text, Flex, Image } from "rebass";
-import { FunctionComponent } from "react";
+import { Box, Text, Flex, Image, Button } from "rebass";
+import { FunctionComponent, useState } from "react";
 
 import { ArObjects } from "./ArObjects";
 import { AudioIcon } from "./AudioIcon";
@@ -28,6 +28,8 @@ export const Detector: FunctionComponent = () => {
     500
   );
 
+  const [started, setStarted] = useState(false);
+
   const detectedObjects = calculateDetections(detections);
 
   const [canPlay, setCanPlay] = useCanPlayAudio();
@@ -35,6 +37,7 @@ export const Detector: FunctionComponent = () => {
   useAudio({
     src: "assets/coronavirus.mp3",
     playing: canPlay && detectedObjects.status === "face",
+    started,
   });
 
   return (
@@ -53,7 +56,7 @@ export const Detector: FunctionComponent = () => {
           autoPlay
           muted
           playsInline
-          hide={!detections}
+          hide={!detections || !started}
           ref={videoRef}
           onLoadedData={onVideoReady}
         />
@@ -65,6 +68,18 @@ export const Detector: FunctionComponent = () => {
             <ArObjects detections={detectedObjects} videoRef={videoRef} />
           </SvgContainer>
         )}
+
+        {!started && (
+          <ButtonContainer>
+            <Button
+              variant="primary"
+              onClick={() => setStarted(true)}
+              disabled={!detections}
+            >
+              {detections ? "Start" : "Loading..."}
+            </Button>
+          </ButtonContainer>
+        )}
       </VideoContainer>
 
       <Box>
@@ -75,7 +90,7 @@ export const Detector: FunctionComponent = () => {
           variant="heading"
           paddingY={3}
         >
-          {getMessage(detectedObjects, status)}
+          {getMessage(detectedObjects, status, started)}
         </Text>
 
         <Footer />
@@ -107,3 +122,21 @@ const SvgContainer = styled.svg`
   height: 100%;
   transform: scaleX(-1);
 `;
+
+const ButtonContainer: FunctionComponent = ({ children }) => {
+  return (
+    <Flex
+      width="100%"
+      height="100%"
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        top: "0",
+        left: "0",
+        position: "absolute",
+      }}
+    >
+      {children}
+    </Flex>
+  );
+};
