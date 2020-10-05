@@ -1,12 +1,12 @@
 # Easy client-side inference with AutoML and React
 
-Neural-network-based object detection is a powerful technique that's getting easier and easier to take advantage of. With Google's [Cloud AutoML] computer vision service (as well as similar services like Microsoft's [Custom Vision](https://azure.microsoft.com/en-us/services/cognitive-services/custom-vision-service/)), it's now surprisingly easy and cheap to train up a powerful object detection model and deploy it as a client-side React app. And best of all, you don't need to hire a data scientist to do it - the model training is code-free, so any application developer can train up a model and focus on doing what they do best, which is building useful and fun applications!
+Neural-network-based object detection is a powerful technique that's getting easier and easier to take advantage of. With Google's [Cloud AutoML] computer vision service (as well as similar services like Microsoft's [Custom Vision](https://azure.microsoft.com/en-us/services/cognitive-services/custom-vision-service/)), it's now surprisingly easy and cheap to train a powerful object detection model and deploy it as a client-side React app. And best of all, you don't need to hire a data scientist to do it - the model training is code-free, so any application developer can train a model and focus on doing what they do best, which is building useful and fun applications!
 
-Given the current state of the world with COVID-19, we thought it would be an interesting test case to try building a mask detector - something that could take a video stream, and report back on the locations of people in a frame who are wearing masks, and of those who aren't. This could potentially be pretty useful to deploy in business trying to enforce mask mandates, and ride sharing services are already using something similar to check that drivers and riders are wearing masks.
+Given the current state of the world with COVID-19, we thought it would be an interesting test case to try building a mask detector - something that could take a video stream, and report back on the locations of people in a frame who are wearing masks, and of those who aren't. This could potentially be pretty useful to deploy in businesses trying to enforce mask mandates, and ride sharing services are already using something similar to check that drivers and riders are wearing masks.
 
-To keep it light though, in this case the detector isn't reporting anything to anyone - we'll just visualize what's going on in the world by showing the device's webcam stream, and having little COVID viruses come out of the mouths of non-masked faces, and health icons hover over masked faces.
+To keep it light though, in this case the detector isn't reporting anything to anyone - it'll just draw bounding boxes around detected masked and unmasked faces.
 
-If you want to skip the explanations and jump into the code, you can find the deployed project at [doctormasky.com](https://doctormasky.com), and the repo [on GitHub](https://github.com/agencyenterprise/masky).
+If you want to skip the explanations and jump into the code, you can find the deployed project (with some extra sounds and visual effects) at [doctormasky.com](https://doctormasky.com), and the repo [on GitHub](https://github.com/agencyenterprise/masky).
 
 ## End-to-end workflow
 
@@ -18,13 +18,13 @@ If that sounds like something you want to do, then read on to learn how to make 
 
 ## Model creation
 
-So first you need to find upload example images of each object type you want to detect (in this case, people wearing masks and people without masks). The more images the better, but because AutoML uses transfer learning from a pre-trained object detection model, even just 30 examples for each class will probably give you decent results - though a hundred of each class would be better. Once you've uploaded the images, you manually draw bounding boxes around the objects (faces with and without masks in our case) in each image, and label each bounding box with its associated class. After all your data is labeled, you just tell Google to train the model, and come back in a couple hours. When it's done, you'll have a model to deploy as an API, or to use for client-side detection. The second option is what we'll focus on today.
+So first you need to find upload example images of each object type you want to detect (in this case, people wearing masks and people without masks). The more images the better, but because AutoML uses transfer learning from a pre-trained object detection model, even just 30 examples for each class will probably give you decent results - though a hundred of each class would be better. Once you've uploaded the images, you use Google's UI to manually draw bounding boxes around the objects (faces with and without masks in our case) in each image, and label each bounding box with its associated class. After all your data is labeled, you just tell Google to train the model, and come back in a couple hours. When it's done, you'll have a model to deploy as an API, or to use for client-side detection. The second option is what we'll focus on today.
 
 Before you create a model, you'll have to set up a Google Cloud project, add billing, and enable the AutoML and Cloud Storage APIs. You can follow Google's [edge device model quickstart docs](https://cloud.google.com/vision/automl/docs/edge-quickstart) to get all that set up. You do have to provide a credit card to enable the API, but the first 15 node hours (training is run on multiple nodes in parallel) of training is free. See the [docs](https://cloud.google.com/vision/automl/pricing#automl-vision-edge) for more pricing information. You can train a basic model in a few node hours, so the first few training runs will be free, and it's \$18 per node hour after that.
 
-Once you've got the AutoML Vision set up, you can start adding images! Sourcing the right images can be the hardest part of training up a model. [Flikr](https://www.flickr.com/) is a good source for Creative-Commons-licensed images. Depending on what objects you're trying to detect, you could also take the images yourself, or use a public dataset from somewhere like [Kaggle](https://www.kaggle.com/datasets). In any case, make sure you get a verity of angles and backgrounds to make sure the model has a robust training set to learn from. And if you're doing something like face detection, make sure you train on a diverse set of people, or your model won't perform well on everyone.
+Once you've got the AutoML Vision set up, you can start adding images! Sourcing the right images can be the hardest part of training a model. [Flikr](https://www.flickr.com/) is a good source for Creative-Commons-licensed images. Depending on what objects you're trying to detect, you could also take the images yourself, or use a public dataset from somewhere like [Kaggle](https://www.kaggle.com/datasets). In any case, make sure you get a verity of angles and backgrounds to make sure the model has a robust training set to learn from. And if you're doing something like face detection, make sure you train on a diverse set of people, or your model won't perform well on everyone.
 
-With your images collected, you can upload them and start labeling them. Create a new dataset, and choose Object Detection. Classification can also be useful if you don't need the specific location of the detected items, but for any kind of AR experience you're probably going to want those bounding boxes.
+With your images collected, you can create a new AutoML dataset to import into. Create a new dataset, and choose Object Detection. Classification can also be useful if you don't need the specific location of the detected items, but for any kind of AR experience you're probably going to want those bounding boxes.
 
 ![Create Dataset](./create_dataset.png)
 
@@ -32,15 +32,15 @@ Next, click on your new dataset and go to the Import tab. This will let you uplo
 
 ![Import](./import.png)
 
-With the images imported, go to the Images tab, click on an image, and start drawing bounding boxes! Make sure to pick the correct label in the top left area of the screen. If there are multiple objects in the image, you can mark each one with its own bounding box.
+With the images imported, go to the Images tab, click on an image, and start drawing bounding boxes! For this project we need two labels - `mask` and `face`. Make sure to pick the correct label in the top left area of the screen. If there are multiple objects in the image, you can mark each one with its own bounding box.
 
 ![Bounding Boxes](./bounding_boxes.png)
 
-Finally, it's time to train you model! Go to the Train tab, and click Start Training. You'll have to pick either a Cloud Hosted or Edge model. For this tutorial you want Edge, since we'll be running inferences on the user's device. I'd also pick "Optimize for faster predictions", since inferences will be running pretty frequently on the video stream. Finally you'll have to pick a node hour budget. When getting started, I'd go for only an hour or two, to keep in the free tier. If you have more budget, then you can go for a full 24 hours. In any case, the training will stop as soon as the model converges, and you'll only be billed for the hours you actually use.
+Finally, it's time to train your model! Go to the Train tab, and click Start Training. You'll have to pick either a Cloud Hosted or Edge model. For this tutorial you want Edge, since we'll be running inferences on the user's device. I'd also pick "Optimize for faster predictions", since inferences will be running pretty frequently on the video stream. Finally you'll have to pick a node hour budget. When getting started, I'd go for only an hour or two, to keep in the free tier. If you have more budget, then you can go for a full 24 hours. In any case, the training will stop as soon as the model converges, and you'll only be billed for the hours you actually use.
 
 Then just click Start Training. You'll get an email when it's done. In the meantime, you can go do something else, or start looking at the React half of the project! Once you get that email, congrats, you just trained a neural network!
 
-The last step is to actually get the model. Click the TensorFlow.js option on the Test & Use tab, and export it to a bucket. You can then download it and add it to your react project. Or, just [make the bucket public](), and reference it directly from your React code! Speaking of which, it's now time to start writing some React.
+The last step is to actually get the model. Click the TensorFlow.js option on the Test & Use tab, and export it to a bucket. You can then download it and add it to your react project. Or, just make the bucket public (see [the Google Storage docs](https://cloud.google.com/storage/docs/access-control/making-data-public#buckets) for how to do that), and you can reference it directly from your React code! Speaking of which, it's now time to start writing some React.
 
 ## React app
 
@@ -254,7 +254,7 @@ export const useDetectionModel = (
 };
 ```
 
-You just need to pass the URL of the `model.json` to `useDetectionModel`. The `model.json` will then tell the library about the other files it'll need to download. If you're hosting the model in a Google Storage bucket, then you can pass in its URL. Otherwise, you can add the model to the `public` directory of the app and pass a relative URL here.
+You just need to pass the URL of the `model.json` to `useDetectionModel`. The `model.json` will then tell the library about the other files it'll need to download. If you're hosting the model in a Google Storage bucket (and have it set up as a public bucket), then you can pass in its URL. Otherwise, you can add the model to the `public` directory of the app and pass a relative URL here.
 
 ```tsx
 // src/App.tsx

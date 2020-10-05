@@ -34,10 +34,8 @@ export const Detector: FunctionComponent = () => {
     started,
   });
 
-  const handleStart = (muted = false) => {
-    if (muted) {
-      setCanPlay(false);
-    }
+  const handleStart = (playAudio: boolean) => {
+    setCanPlay(playAudio);
     setStarted(true);
   };
 
@@ -72,11 +70,11 @@ export const Detector: FunctionComponent = () => {
 
         {!started && !!detections && (
           <ButtonContainer>
-            <Button variant="primary" onClick={() => handleStart()}>
+            <Button variant="primary" onClick={() => handleStart(true)}>
               Start with sound
             </Button>
 
-            <Button variant="primary" onClick={() => handleStart(true)} ml="2">
+            <Button variant="primary" onClick={() => handleStart(false)} ml="2">
               Start without sound
             </Button>
           </ButtonContainer>
