@@ -4,9 +4,8 @@ import React, {
   useEffect,
   useReducer,
 } from "react";
-import * as automl from "@tensorflow/tfjs-automl";
+import { PredictedObject } from "@tensorflow/tfjs-automl";
 
-import { Detections } from "../lib/Detection";
 import corona from "../assets/corona.svg";
 import health from "../assets/health.svg";
 
@@ -20,13 +19,13 @@ interface ArObject {
 }
 
 export interface ArObjectsProps {
-  detections: Detections;
+  detections: PredictedObject[];
   videoRef: React.MutableRefObject<HTMLVideoElement | null>;
 }
 
 interface ArObjectsState {
   objects: ArObject[];
-  detections: automl.PredictedObject[];
+  detections: PredictedObject[];
   video: { height: number; width: number };
 }
 
@@ -46,7 +45,7 @@ type EmptyAction<Type extends string> = {
 
 type ArObjectsAction =
   | Action<"tick", number>
-  | Action<"detections", Detections>
+  | Action<"detections", PredictedObject[]>
   | Action<"video", VideoDimensions>
   | EmptyAction<"generate">;
 
@@ -85,7 +84,7 @@ const reducer: Reducer<ArObjectsState, ArObjectsAction> = (state, action) => {
       };
     }
     case "detections": {
-      return { ...state, detections: action.payload.boxes };
+      return { ...state, detections: action.payload };
     }
     default:
       throw new Error();
@@ -147,7 +146,7 @@ const useGenerateArObjects = (dispatch: React.Dispatch<ArObjectsAction>) => {
 };
 
 const useDetections = (
-  detections: Detections,
+  detections: PredictedObject[],
   dispatch: React.Dispatch<ArObjectsAction>
 ): void => {
   useEffect(() => {
@@ -170,7 +169,7 @@ const useVideo = (
 const newArObject = ({
   label,
   box: { top, left, height, width },
-}: automl.PredictedObject): ArObject => {
+}: PredictedObject): ArObject => {
   if (label === "face") {
     const angle = 2 * Math.PI * Math.random();
     const dx = SPEED * Math.cos(angle);

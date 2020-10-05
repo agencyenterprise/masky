@@ -1,12 +1,12 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import styled from "@emotion/styled";
+import styled from "@emotion/styled/macro";
 import { Box, Text, Flex, Image, Button } from "rebass";
 import { FunctionComponent, useState } from "react";
 
 import { ArObjects } from "./ArObjects";
 import { AudioIcon } from "./AudioIcon";
-import { calculateDetections } from "../lib/Detection";
+import { getDetectionStatus } from "../lib/getDetectionStatus";
 import { Footer } from "./Footer";
 import { getMessage } from "../lib/message";
 import { PredictionWrapper } from "./PredictionWrapper";
@@ -22,26 +22,27 @@ const modelUrl = `${process.env.REACT_APP_MODEL_URL}/model.json`;
 export const Detector: FunctionComponent = () => {
   const detectionModel = useDetectionModel(modelUrl);
   const [videoRef, status] = useWebcam();
-  const [detections, onVideoReady] = useDetection(
-    detectionModel,
-    videoRef,
-    500
-  );
-
+  const [detections, onVideoReady] = useDetection(detectionModel, videoRef);
   const [started, setStarted] = useState(false);
-
-  const detectedObjects = calculateDetections(detections);
-
   const [canPlay, setCanPlay] = useCanPlayAudio();
+
+  const detectionStatus = getDetectionStatus(detections);
 
   useAudio({
     src: "assets/coronavirus.mp3",
-    playing: canPlay && detectedObjects.status === "face",
+    playing: canPlay && detectionStatus === "face",
     started,
   });
 
+  const handleStart = (muted = false) => {
+    if (muted) {
+      setCanPlay(false);
+    }
+    setStarted(true);
+  };
+
   return (
-    <PredictionWrapper detections={detectedObjects}>
+    <PredictionWrapper status={detectionStatus}>
       <AudioIcon audio={canPlay} onChange={setCanPlay} />
 
       <Flex justifyContent="center" alignItems="center" p={2}>
@@ -61,22 +62,22 @@ export const Detector: FunctionComponent = () => {
           onLoadedData={onVideoReady}
         />
 
-        {videoRef.current && (
+        {videoRef.current && detections && (
           <SvgContainer
             viewBox={`0 0 ${videoRef.current?.videoWidth} ${videoRef.current?.videoHeight}`}
           >
-            <ArObjects detections={detectedObjects} videoRef={videoRef} />
+            <ArObjects detections={detections} videoRef={videoRef} />
           </SvgContainer>
         )}
 
-        {!started && (
+        {!started && !!detections && (
           <ButtonContainer>
-            <Button
-              variant="primary"
-              onClick={() => setStarted(true)}
-              disabled={!detections}
-            >
-              {detections ? "Start" : "Loading..."}
+            <Button variant="primary" onClick={() => handleStart()}>
+              Start with sound
+            </Button>
+
+            <Button variant="primary" onClick={() => handleStart(true)} ml="2">
+              Start without sound
             </Button>
           </ButtonContainer>
         )}
@@ -90,7 +91,7 @@ export const Detector: FunctionComponent = () => {
           variant="heading"
           paddingY={3}
         >
-          {getMessage(detectedObjects, status, started)}
+          {getMessage(detectionStatus, status, started)}
         </Text>
 
         <Footer />

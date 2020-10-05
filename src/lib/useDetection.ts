@@ -2,14 +2,14 @@ import React, { useState, useCallback, useEffect } from "react";
 import * as tf from "@tensorflow/tfjs";
 import * as automl from "@tensorflow/tfjs-automl";
 
-export const DEFAULT_DETECTIONS_TIME = 1000;
+export const DETECTION_INTERVAL = 500;
+export const DETECTION_THRESHOLD = 0.65;
 
 export type PredictedObjects = automl.PredictedObject[] | null;
 
 export const useDetection = (
   model: automl.ObjectDetectionModel | null,
-  videoRef: React.MutableRefObject<HTMLVideoElement | null>,
-  detectionInterval = DEFAULT_DETECTIONS_TIME
+  videoRef: React.MutableRefObject<HTMLVideoElement | null>
 ): [PredictedObjects, () => void] => {
   const [detections, setDetections] = useState<PredictedObjects>(null);
   const [videoReady, setVideoReady] = useState(false);
@@ -28,19 +28,24 @@ export const useDetection = (
     const video = videoRef.current;
     if (!videoReady || !model || !video) return;
 
+    const detect = (video: HTMLVideoElement) =>
+      // Run the model, and ignore low-probability detections.
+      model.detect(video, { score: DETECTION_THRESHOLD });
+
     // First run
-    model.detect(video).then(setDetections);
+    detect(video).then(setDetections);
 
     // Schedule detections.
     const handle = setInterval(
-      () => model.detect(video).then(setDetections),
-      detectionInterval
+      () => detect(video).then(setDetections),
+      DETECTION_INTERVAL
     );
 
+    // Clean up the interval if the useEffect is re-run.
     return () => {
       clearInterval(handle);
     };
-  }, [videoReady, detectionInterval, model, videoRef, setDetections]);
+  }, [videoReady, model, videoRef, setDetections]);
 
   return [detections, onVideoReady];
 };

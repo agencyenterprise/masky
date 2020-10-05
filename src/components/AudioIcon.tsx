@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import styled from "@emotion/styled";
+import styled from "@emotion/styled/macro";
 import { FunctionComponent } from "react";
 import { Text } from "rebass";
 

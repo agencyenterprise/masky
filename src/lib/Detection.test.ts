@@ -1,6 +1,6 @@
 import { PredictedObject } from "@tensorflow/tfjs-automl";
 
-import { calculateDetections } from "./Detection";
+import { calculateDetections } from "./getDetectionStatus";
 
 describe("Detection", () => {
   describe("calculateDetections", () => {

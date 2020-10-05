@@ -1,5 +1,5 @@
 import { WebcamStatus } from "./useWebcam";
-import { Detections, DetectionStatus } from "./Detection";
+import { DetectionStatus } from "./getDetectionStatus";
 
 export const webcamStatusMessage: Record<WebcamStatus, string> = {
   waiting: "Waiting for camera...",
@@ -16,15 +16,15 @@ export const detectionMessage: Record<DetectionStatus, string> = {
 };
 
 export const getMessage = (
-  detections: Detections,
+  detectionStatus: DetectionStatus,
   webcamStatus: WebcamStatus,
-  started: boolean
+  started: boolean = true
 ): string => {
-  if (detections.status === "loading") {
+  if (detectionStatus === "loading") {
     return webcamStatusMessage[webcamStatus];
   } else if (!started) {
     return "Ready to start";
   } else {
-    return detectionMessage[detections.status];
+    return detectionMessage[detectionStatus];
   }
 };
