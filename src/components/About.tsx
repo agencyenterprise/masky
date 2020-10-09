@@ -18,7 +18,7 @@ export const About: FunctionComponent = () => {
 
         <Text variant="body">
           So take your mask off (when you're inside please!) and let the Doctor
-          show you just <em>really</em> going on.
+          show you what's <em>really</em> going on.
         </Text>
 
         <Heading variant="display" mt={4}>
