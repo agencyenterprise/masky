@@ -32,8 +32,8 @@
     "format:eslint": "eslint --fix src/**/*.{ts,tsx}  --max-warnings 0",
     "format:prettier": "prettier --write '**/*.{ts,tsx,css,html,md,json}'",
     "deploy": "gh-pages -m 'deploy [ci skip]' --dist ./build",
-    "cors:get": "gsutil cors get gs://masky-model",
-    "cors:set": "gsutil cors set ./cors.json gs://masky-model"
+    "cors:get": "gsutil cors get gs://masky-ae-model",
+    "cors:set": "gsutil cors set ./cors.json gs://masky-ae-model"
   },
   "eslintConfig": {
     "extends": "react-app"

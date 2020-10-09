@@ -433,7 +433,7 @@ export type DetectionStatus = "loading" | "none" | "face" | "mask" | "both";
 
 export const getDetectionStatus = (detections: PredictedObject[] | null) => {
   if (!detections) {
-    return "none";
+    return "loading";
   }
 
   let masks = 0;

@@ -16,7 +16,7 @@ export const getDetectionStatus = (
   detections: PredictedObject[] | null
 ): DetectionStatus => {
   if (!detections) {
-    return "none";
+    return "loading";
   }
 
   let masks = 0;
