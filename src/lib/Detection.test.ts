@@ -1,20 +1,62 @@
 import { PredictedObject } from "@tensorflow/tfjs-automl";
 
-import { calculateDetections } from "./getDetectionStatus";
+import { getDetectionStatus } from "./getDetectionStatus";
 
-describe("Detection", () => {
-  describe("calculateDetections", () => {
-    it("handles empty detections", () => {
-      const detections: PredictedObject[] = [];
+const predictedObject: PredictedObject = {
+  label: "mask",
+  box: { height: 0, width: 0, left: 0, top: 0 },
+  score: 90,
+};
 
-      const detectionObjects = calculateDetections(detections);
+describe("getDetectionStatus", () => {
+  it("handles empty detections", () => {
+    const detections: PredictedObject[] = [];
 
-      expect(detectionObjects).toEqual({
-        boxes: [],
-        masks: 0,
-        faces: 0,
-        status: "none",
-      });
-    });
+    const status = getDetectionStatus(detections);
+
+    expect(status).toBe("none");
+  });
+
+  it("handles mask detections", () => {
+    const detections: PredictedObject[] = [
+      {
+        ...predictedObject,
+        label: "mask",
+      },
+    ];
+
+    const status = getDetectionStatus(detections);
+
+    expect(status).toBe("mask");
+  });
+
+  it("handles mask detections", () => {
+    const detections: PredictedObject[] = [
+      {
+        ...predictedObject,
+        label: "face",
+      },
+    ];
+
+    const status = getDetectionStatus(detections);
+
+    expect(status).toBe("face");
+  });
+
+  it("handles both detections", () => {
+    const detections: PredictedObject[] = [
+      {
+        ...predictedObject,
+        label: "face",
+      },
+      {
+        ...predictedObject,
+        label: "mask",
+      },
+    ];
+
+    const status = getDetectionStatus(detections);
+
+    expect(status).toBe("both");
   });
 });
