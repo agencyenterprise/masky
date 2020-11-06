@@ -4,19 +4,19 @@
     "main.js.map": "/static/js/main.b883db1e.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.8c4c0927.js",
     "runtime-main.js.map": "/static/js/runtime-main.8c4c0927.js.map",
-    "static/js/2.f0191010.chunk.js": "/static/js/2.f0191010.chunk.js",
-    "static/js/2.f0191010.chunk.js.map": "/static/js/2.f0191010.chunk.js.map",
+    "static/js/2.7053d1d9.chunk.js": "/static/js/2.7053d1d9.chunk.js",
+    "static/js/2.7053d1d9.chunk.js.map": "/static/js/2.7053d1d9.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.d3b458217af5612283c686280c7c47b6.js": "/precache-manifest.d3b458217af5612283c686280c7c47b6.js",
+    "precache-manifest.e71d9719353dc71ac3311c63bd5d584b.js": "/precache-manifest.e71d9719353dc71ac3311c63bd5d584b.js",
     "service-worker.js": "/service-worker.js",
-    "static/js/2.f0191010.chunk.js.LICENSE.txt": "/static/js/2.f0191010.chunk.js.LICENSE.txt",
+    "static/js/2.7053d1d9.chunk.js.LICENSE.txt": "/static/js/2.7053d1d9.chunk.js.LICENSE.txt",
     "static/media/corona.svg": "/static/media/corona.95f04a28.svg",
     "static/media/health.svg": "/static/media/health.9599ae06.svg",
     "static/media/logo.svg": "/static/media/logo.0a98c8a5.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.8c4c0927.js",
-    "static/js/2.f0191010.chunk.js",
+    "static/js/2.7053d1d9.chunk.js",
     "static/js/main.b883db1e.chunk.js"
   ]
 }
