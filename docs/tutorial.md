@@ -151,13 +151,13 @@ const Message = styled.div`
 `;
 ```
 
+## Initialize the camera
+
 With the styling out of the way, we can actually get the webcam stream set up. That'll require a hook to manage the state, which will handle connecting to the camera and connecting the camera to the video element's `ref`.
 
 This will use `navigator.mediaDevices.getUserMedia({video: { facingMode: 'user' }})` to get the video stream. The `facingMode` tells the browser which camera to use if the device has more than one, like a smartphone. Then we'll create a `HTMLVideoElement` ref that we'll pass to the `video` element, and will use that to pass the camera stream to the `video`.
 
 Finally, the hook will return the `ref` to be sent to the `video`, and a `status` string that's helpful for letting the user know how the setup process is going. There's also a little error handling code, but in practice I haven't seen any errors.
-
-## Initialize the camera
 
 ```typescript
 import { useRef, useEffect, useState } from "react";
@@ -327,7 +327,7 @@ With that bit of state management set up, we can actually start doing detections
 
 ```typescript
 export const DETECTION_INTERVAL = 500;
-export const DETECTION_THRESHOLD = 0.65;
+export const DETECTION_THRESHOLD = 0.62;
 
 export const useDetection = (
   model: automl.ObjectDetectionModel | null,

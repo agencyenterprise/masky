@@ -8,6 +8,7 @@ import { PredictedObject } from "@tensorflow/tfjs-automl";
 
 import corona from "../assets/corona.svg";
 import health from "../assets/health.svg";
+import { DetectionClass } from "../lib/getDetectionStatus";
 
 interface ArObject {
   id: number;
@@ -170,7 +171,7 @@ const newArObject = ({
   label,
   box: { top, left, height, width },
 }: PredictedObject): ArObject => {
-  if (label === "face") {
+  if (label === DetectionClass.face) {
     const angle = 2 * Math.PI * Math.random();
     const dx = SPEED * Math.cos(angle);
     const dy = SPEED * Math.sin(angle);

@@ -3,7 +3,7 @@ import * as tf from "@tensorflow/tfjs";
 import * as automl from "@tensorflow/tfjs-automl";
 
 export const DETECTION_INTERVAL = 500;
-export const DETECTION_THRESHOLD = 0.65;
+export const DETECTION_THRESHOLD = 0.62;
 
 export type PredictedObjects = automl.PredictedObject[] | null;
 

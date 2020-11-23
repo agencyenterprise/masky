@@ -1,9 +1,9 @@
 import { PredictedObject } from "@tensorflow/tfjs-automl";
 
-import { getDetectionStatus } from "./getDetectionStatus";
+import { DetectionClass, getDetectionStatus } from "./getDetectionStatus";
 
 const predictedObject: PredictedObject = {
-  label: "mask",
+  label: DetectionClass.face,
   box: { height: 0, width: 0, left: 0, top: 0 },
   score: 90,
 };
@@ -21,7 +21,7 @@ describe("getDetectionStatus", () => {
     const detections: PredictedObject[] = [
       {
         ...predictedObject,
-        label: "mask",
+        label: DetectionClass.mask,
       },
     ];
 
@@ -34,7 +34,7 @@ describe("getDetectionStatus", () => {
     const detections: PredictedObject[] = [
       {
         ...predictedObject,
-        label: "face",
+        label: DetectionClass.face,
       },
     ];
 
@@ -47,11 +47,11 @@ describe("getDetectionStatus", () => {
     const detections: PredictedObject[] = [
       {
         ...predictedObject,
-        label: "face",
+        label: DetectionClass.face,
       },
       {
         ...predictedObject,
-        label: "mask",
+        label: DetectionClass.mask,
       },
     ];
 

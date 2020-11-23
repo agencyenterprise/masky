@@ -2,6 +2,11 @@ import { PredictedObject } from "@tensorflow/tfjs-automl";
 
 export const DETECTION_THRESHOLD = 0.65;
 
+export enum DetectionClass {
+  face = "b'face'",
+  mask = "b'mask'",
+}
+
 export type DetectionStatus = "loading" | "none" | "face" | "mask" | "both";
 
 export const DetectionColor: Record<DetectionStatus, string> = {
@@ -23,9 +28,9 @@ export const getDetectionStatus = (
   let faces = 0;
 
   detections.forEach((detection) => {
-    if (detection.label === "mask") {
+    if (detection.label === DetectionClass.mask) {
       masks += 1;
-    } else if (detection.label === "face") {
+    } else if (detection.label === DetectionClass.face) {
       faces += 1;
     }
   });

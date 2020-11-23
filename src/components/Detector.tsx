@@ -28,6 +28,8 @@ export const Detector: FunctionComponent = () => {
 
   const detectionStatus = getDetectionStatus(detections);
 
+  console.log(detections, detectionStatus);
+
   useAudio({
     src: "assets/coronavirus.mp3",
     playing: canPlay && detectionStatus === "face",
