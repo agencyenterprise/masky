@@ -5,12 +5,14 @@ export type WebcamStatus = "waiting" | "connected" | "failed";
 const defaultVideoConstraints = { facingMode: "user" };
 
 export const useWebcam = (
+  started = true,
   videoConstraints: MediaTrackConstraints = defaultVideoConstraints
 ): [React.MutableRefObject<HTMLVideoElement | null>, WebcamStatus] => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [status, setStatus] = useState<WebcamStatus>("waiting");
 
   useEffect(() => {
+    if (!started) return;
     navigator.mediaDevices
       .getUserMedia({ video: videoConstraints })
       .then((stream) => {
@@ -26,7 +28,7 @@ export const useWebcam = (
         console.error(error);
         setStatus("failed");
       });
-  }, [videoConstraints]);
+  }, [started, videoConstraints]);
 
   return [videoRef, status];
 };

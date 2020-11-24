@@ -58,7 +58,13 @@ export const App: FunctionComponent = () => {
         )}
       </VideoContainer>
 
-      <Message>{getMessage(detectionStatus, status)}</Message>
+      <Message>
+        {getMessage({
+          model: detectionModel,
+          detectionStatus,
+          webcamStatus: status,
+        })}
+      </Message>
     </PredictionWrapper>
   );
 };
@@ -85,18 +91,20 @@ export const detectionColor: Record<string, string> = {
   loading: "black",
   face: "red",
   mask: "green",
+  "b'face'": "red",
+  "b'mask'": "green",
   both: "orange",
   none: "black",
 };
 
-const PredictionWrapper = styled.div<{ status: string }>`
+const PredictionWrapper = styled.div<{ status?: string }>`
   width: 100%;
   height: 100%;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: ${({ status }) => detectionColor[status]};
+  background: ${({ status = "loading" }) => detectionColor[status]};
 `;
 
 const VideoContainer = styled.div`

@@ -99,6 +99,10 @@ const theme = {
       color: "background",
       bg: "primary",
       borderRadius: "default",
+      cursor: "pointer",
+      "&:hover": {
+        backgroundColor: "gray",
+      },
     },
     outline: {
       variant: "buttons.primary",

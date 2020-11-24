@@ -12,7 +12,7 @@ import { getMessage } from "../lib/message";
 import { PredictionWrapper } from "./PredictionWrapper";
 import { useAudio } from "../lib/useAudio";
 import { useCanPlayAudio } from "../lib/useCanPlayAudio";
-import { useDetection } from "../lib/useDetection";
+import { useDetection, useWarmUp } from "../lib/useDetection";
 import { useDetectionModel } from "../lib/useDetectionModel";
 import { useWebcam } from "../lib/useWebcam";
 import logo from "../assets/logo.svg";
@@ -21,14 +21,17 @@ const modelUrl = `${process.env.REACT_APP_MODEL_URL}/model.json`;
 
 export const Detector: FunctionComponent = () => {
   const detectionModel = useDetectionModel(modelUrl);
-  const [videoRef, status] = useWebcam();
-  const [detections, onVideoReady] = useDetection(detectionModel, videoRef);
   const [started, setStarted] = useState(false);
+  const [videoRef, status] = useWebcam();
+  const warmedUp = useWarmUp(detectionModel);
+  const [detections, onVideoReady] = useDetection(
+    detectionModel,
+    videoRef,
+    started
+  );
   const [canPlay, setCanPlay] = useCanPlayAudio();
 
   const detectionStatus = getDetectionStatus(detections);
-
-  console.log(detections, detectionStatus);
 
   useAudio({
     src: "assets/coronavirus.mp3",
@@ -57,7 +60,6 @@ export const Detector: FunctionComponent = () => {
           autoPlay
           muted
           playsInline
-          hide={!detections || !started}
           ref={videoRef}
           onLoadedData={onVideoReady}
         />
@@ -66,11 +68,13 @@ export const Detector: FunctionComponent = () => {
           <SvgContainer
             viewBox={`0 0 ${videoRef.current?.videoWidth} ${videoRef.current?.videoHeight}`}
           >
-            <ArObjects detections={detections} videoRef={videoRef} />
+            {started && (
+              <ArObjects detections={detections} videoRef={videoRef} />
+            )}
           </SvgContainer>
         )}
 
-        {!started && !!detections && (
+        {!started && warmedUp && (
           <ButtonContainer>
             <Button variant="primary" onClick={() => handleStart(true)}>
               Start with sound
@@ -91,7 +95,13 @@ export const Detector: FunctionComponent = () => {
           variant="heading"
           paddingY={3}
         >
-          {getMessage(detectionStatus, status, started)}
+          {getMessage({
+            model: detectionModel,
+            detectionStatus,
+            webcamStatus: status,
+            started,
+            warmedUp,
+          })}
         </Text>
 
         <Footer />
@@ -106,7 +116,7 @@ const VideoContainer = styled.div`
   flex-shrink: 1;
 `;
 
-const Video = styled.video<{ hide: boolean }>`
+const Video = styled.video<{ hide?: boolean }>`
   position: absolute;
   width: 100%;
   height: 100%;
