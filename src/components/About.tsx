@@ -49,11 +49,11 @@ export const About: FunctionComponent = () => {
             TensorFlow.js
           </Link>{" "}
           to run the inferences, and React to put it all together. You can read
-          more in{" "}
-          <Link href="" color="secondary">
+          more about how we built it in{" "}
+          <Link href="https://blog.ae.studio/doctor-masky/" color="secondary">
             this blog post
-          </Link>{" "}
-          (coming soon).
+          </Link>
+          .
         </Text>
 
         <Text variant="body">
@@ -90,8 +90,8 @@ export const About: FunctionComponent = () => {
         </Text>
 
         <Text variant="body">
-          Also, if you've got a human-agency increasing data science project,
-          we'd love to{" "}
+          Also, if you've got a human-agency increasing data science or
+          application development project, we'd love to{" "}
           <Link href="https://ae.studio" color="secondary">
             help you build it!
           </Link>
