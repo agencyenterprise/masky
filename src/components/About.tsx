@@ -64,6 +64,24 @@ export const About: FunctionComponent = () => {
         </Text>
 
         <Heading variant="heading" mt={3} mb={2}>
+          Okay this is cool I guess. What should I do with it?
+        </Heading>
+
+        <Text variant="body">
+          Messing around with it (and listening to the soothing tones of Cardi
+          B) is enough for us. But if you own a store and you're having trouble
+          getting people to wear their masks, maybe set up a tablet and let
+          Doctor Masky play bad cop?
+          <br />
+          <br />
+          BTW if you do this, please{" "}
+          <Link href="mailto:info@ae.studio" color="secondary">
+            send us an email
+          </Link>{" "}
+          to tell us how it went!
+        </Text>
+
+        <Heading variant="heading" mt={3} mb={2}>
           This is taking a while to load.
         </Heading>
 
@@ -92,7 +110,7 @@ export const About: FunctionComponent = () => {
         <Text variant="body">
           Also, if you've got a human-agency increasing data science or
           application development project, we'd love to{" "}
-          <Link href="https://ae.studio" color="secondary">
+          <Link href="https://ae.studio/#robot-here" color="secondary">
             help you build it!
           </Link>
         </Text>
