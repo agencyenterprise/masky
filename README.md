@@ -43,11 +43,11 @@ Your app is ready to be deployed!
 yarn deploy
 ```
 
-Deploys the build file to [Surge](https://surge.sh)
+Deploys the build file via GitHub pages. This is run automatically by CircleCI when you merge to `master`.
 
 ## CORS
 
-To set up Google buckets CORS, update the `cors.json` file and run
+The model is stored in Google Storage, which has to have CORS headers configured. If you want to change the CORS configuration: buckets CORS, update the `cors.json` file and run:
 
 ```bash
 yarn cors:set
